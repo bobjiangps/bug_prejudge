@@ -1,0 +1,8 @@
+local_regression: {
+    host: 127.0.0.1,
+    username: root,
+    password: ,
+    dbname: regression,
+    port: 3306,
+    charset: utf8
+},
