@@ -39,17 +39,26 @@ if __name__ == "__main__":
     history = pd.read_csv(history_regression_file)
     to_drop = ["counter", "sprint", "exist_regression_report"]
     history.drop(columns=to_drop, inplace=True)
-    # loc retrieves only the rows that matches the condition
-    # print(history.loc[history["test_suite_id"] == current_test_round["test_suite_id"]].count)
-    # 分位数，这里代表有90%的值都大于这个数字，那么如果新的值落在这个值以下，可以考虑为可能异常；比如总数14个，N1到N14，(14-1)/10+1=2.3, N2+(N3-N2)*0.3就是10%分位数
-    print(history.loc[history["test_suite_id"] == current_test_round["test_suite_id"]].pass_rate.quantile(.1))
-    # where returns the whole dataframe, replacing rows that don't match the condition as NaN by default
-    # print(history.where(history["test_suite_id"] == current_test_round["test_suite_id"]).count())
-    # print(history.where(history["test_suite_id"] == current_test_round["test_suite_id"]).pass_rate.mean())
 
-    pass_rate_quantile_ten_percent = history.loc[history["test_suite_id"] == current_test_round["test_suite_id"]].pass_rate.quantile(.1)
-    average_pass_rate = history.loc[history["test_suite_id"] == current_test_round["test_suite_id"]].pass_rate.mean()
-    if current_test_round["pass_rate"] <= pass_rate_quantile_ten_percent or (average_pass_rate - current_test_round["pass_rate"]) > Config.load_env()["pass_rate_offset"] * 100:
-        print("Unnormal Test Round !!! need to check error messages first")
+    normal_round = None
+    if current_test_round["test_suite_id"] not in history["test_suite_id"]:
+        print("Test round with new test suite, no history record")
+        normal_round = True
     else:
-        print("Normal Test Round..")
+        # loc retrieves only the rows that matches the condition
+        # print(history.loc[history["test_suite_id"] == current_test_round["test_suite_id"]].count)
+        # 分位数，这里代表有90%的值都大于这个数字，那么如果新的值落在这个值以下，可以考虑为可能异常；比如总数14个，N1到N14，(14-1)/10+1=2.3, N2+(N3-N2)*0.3就是10%分位数
+        print("10% quantile is:", history.loc[history["test_suite_id"] == current_test_round["test_suite_id"]].pass_rate.quantile(.1))
+        print("current pass rate is:", current_test_round["pass_rate"])
+        # where returns the whole dataframe, replacing rows that don't match the condition as NaN by default
+        # print(history.where(history["test_suite_id"] == current_test_round["test_suite_id"]).count())
+        # print(history.where(history["test_suite_id"] == current_test_round["test_suite_id"]).pass_rate.mean())
+
+        pass_rate_quantile_ten_percent = history.loc[history["test_suite_id"] == current_test_round["test_suite_id"]].pass_rate.quantile(.1)
+        average_pass_rate = history.loc[history["test_suite_id"] == current_test_round["test_suite_id"]].pass_rate.mean()
+        if current_test_round["pass_rate"] <= pass_rate_quantile_ten_percent or (average_pass_rate - current_test_round["pass_rate"]) > Config.load_env()["pass_rate_offset"] * 100:
+            print("Unnormal Test Round !!! need to check error messages first")
+            normal_round = False
+        else:
+            print("Normal Test Round..")
+            normal_round = True
