@@ -12,11 +12,15 @@ class Config:
         return all_config
 
     @classmethod
-    def load_db(cls):
-        dbs = YamlHelper.load_yaml(os.path.join(os.getcwd(), "configuration", "database.yaml"))
-        return dbs
+    def load_db(cls, name=None):
+        if name:
+            return YamlHelper.load_yaml(os.path.join(os.getcwd(), "configuration", "database.yaml"))[name]
+        else:
+            return YamlHelper.load_yaml(os.path.join(os.getcwd(), "configuration", "database.yaml"))
 
     @classmethod
-    def load_env(cls):
-        env = YamlHelper.load_yaml(os.path.join(os.getcwd(), "configuration", "env.yaml"))
-        return env
+    def load_env(cls, name=None):
+        if name:
+            return YamlHelper.load_yaml(os.path.join(os.getcwd(), "configuration", "env.yaml"))[name]
+        else:
+            return YamlHelper.load_yaml(os.path.join(os.getcwd(), "configuration", "env.yaml"))
