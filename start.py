@@ -1,11 +1,10 @@
 from utils.mysql_helper import MysqlConnection
 from utils.file_helper import FileHelper
+from utils.error_analyzer import ErrorAnalyzer
 from configuration.config import Config
-from collections import Counter
 from fuzzywuzzy import fuzz
 import pandas as pd
 import os
-import re
 
 
 def generate_regression_history_data(db_conn, project_id, file_path):
@@ -18,7 +17,7 @@ def generate_regression_history_data(db_conn, project_id, file_path):
         period_regression_sql = "select * from test_rounds where project_id=%d and DATE_SUB(CURDATE(), INTERVAL 12 MONTH) <= date(start_time) and end_time is not NULL;" % int(project_id)
         period_regression_history = db_conn.get_all_results_from_database(period_regression_sql)
         FileHelper.save_db_query_result_to_csv(period_regression_history, file_path)
-        print("there are %d rows in database when query the sql\n" % len(period_regression_history))
+        print("there are %d rows in database when query the history\n" % len(period_regression_history))
     else:
         print("NOT generate history regression data\n")
 
@@ -32,14 +31,14 @@ def generate_test_round_errors_data(db_conn, round_id, file_path):
         return False
     else:
         FileHelper.save_db_query_result_to_csv(test_round_errors, file_path)
-        print("there are %d rows in database when query the sql\n" % len(test_round_errors))
+        print("there are %d rows in database when query the round error\n" % len(test_round_errors))
         return True
 
 
 if __name__ == "__main__":
     # preparation
     test_round_id = Config.load_env("test_round_id")
-    response = {"id": test_round_id, "message": None, "scripts": None, "cases": None}
+    response = {"id": test_round_id, "message": None, "scripts": [], "cases": []}
     data_folder = os.path.join(os.getcwd(), "data")
     if not os.path.exists(data_folder):
         os.mkdir(data_folder)
@@ -61,7 +60,13 @@ if __name__ == "__main__":
     normal_round = None
     if current_test_round["test_suite_id"] not in regression_history["test_suite_id"]:
         print("Test round with new test suite, no history record")
-        normal_round = True
+        # check pass rate line for new test suite
+        if current_test_round["pass_rate"] < Config.load_env("pass_rate_line"):
+            print("NOT normal Test Round !!! need to check error messages first")
+            normal_round = False
+        else:
+            print("Normal Test Round..")
+            normal_round = True
     else:
         pass_rate_quantile_ten_percent = regression_history.loc[regression_history["test_suite_id"] == current_test_round["test_suite_id"]].pass_rate.quantile(.1)
         average_pass_rate = regression_history.loc[regression_history["test_suite_id"] == current_test_round["test_suite_id"]].pass_rate.mean()
@@ -74,30 +79,24 @@ if __name__ == "__main__":
             print("Normal Test Round..")
             normal_round = True
 
-    normal_round = False  # debug, will be removed
-    if normal_round:
-        #todo
-        print("todo...")
-    else:
-        generate_error_result = generate_test_round_errors_data(regression_db, test_round_id, test_round_errors_file)
-        if generate_error_result:
-            network_error_keyword = ["Net::ReadTimeout", "Request Timeout"]
-            round_errors = pd.read_csv(test_round_errors_file)
-            round_network_errors = round_errors[round_errors["error_message"].str.contains("|".join(network_error_keyword), flags=re.IGNORECASE, regex=True)]
-            network_error_percentage = round_network_errors.id.count()/round_errors.id.count()
-            print("network error percentage is:", "%.2f%%" % (network_error_percentage * 100))
+    # generate error data
+    generate_error_result = generate_test_round_errors_data(regression_db, test_round_id, test_round_errors_file)
+
+    if generate_error_result:
+        round_errors = pd.read_csv(test_round_errors_file)
+        # normal_round = False  # debug, will be removed
+        if normal_round:
+            most_failure_element = ErrorAnalyzer.check_element_caused_most_failures(round_errors)
+            response["message"] = "The element '%s' has most failures: %d times" % (most_failure_element[0], most_failure_element[1])
+        else:
+            network_error_percentage = ErrorAnalyzer.check_network_issue_percentage(round_errors)
             if network_error_percentage > 0.5:
                 response["message"] = "More than 50%% of failures are caused by network issue, please check environment then rerun test round %d" % test_round_id
             else:
-                element_error_keyword = [".*Execute - wait (\w*::\w*) to present.*", ".*Execute - open .* (\w*::\w*) .*- failed.*", ".*Execute - select .* (\w*::\w*) .*- failed.*", ".*Execute - get .* (\w*::\w*) .*- failed.*"]
-                round_element_errors_match = round_errors[round_errors["error_message"].str.match("|".join(element_error_keyword), flags=re.IGNORECASE)]
-                round_element_errors_extract = round_element_errors_match.error_message.str.extract("|".join(element_error_keyword), flags=re.IGNORECASE, expand=False)
-                round_element_errors_record = []
-                for seq in round_element_errors_extract:
-                    for item in round_element_errors_extract[seq]:
-                        if str(item) != "nan":
-                            round_element_errors_record.append(item)
-                most_failure_element = Counter(round_element_errors_record).most_common(1)
-                response["message"] = "The element '%s' has most failures: %d times" % (most_failure_element[0][0], most_failure_element[0][1])
-                print(response["message"])
+                most_failure_element = ErrorAnalyzer.check_element_caused_most_failures(round_errors)
+                response["message"] = "The element '%s' has most failures: %d times" % (most_failure_element[0], most_failure_element[1])
+    else:
+        print("go to simple prejudge")
+        #todo, mark the pass and not-run results
+
     print(response)
