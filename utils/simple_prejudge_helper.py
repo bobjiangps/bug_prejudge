@@ -13,30 +13,31 @@ class SimplePrejudgeHelper:
         net_issue_re = [".*Net::ReadTimeout.*", ".*Request Timeout.*"]
         code_error_re = [".*undefined method.*", ".*undefined local variable.*", ".*uninitialized constant.*"]
 
-        if case.result == "failed":
-            if case.error_message:
+        index = case.index.values[0]
+        if case.result[index] == "failed":
+            if case.error_message[index]:
                 message = case.error_message
-                if message.str.match("|".join(log_error_re), flags=re.IGNORECASE):
-                    if message.str.match("|".join(assert_fail_re), flags=re.IGNORECASE):
+                if message.str.match("|".join(log_error_re), flags=re.IGNORECASE)[index]:
+                    if message.str.match("|".join(assert_fail_re), flags=re.IGNORECASE)[index]:
                         prejudge_type = "suspect bug"
-                    elif message.str.match("|".join(element_error_re), flags=re.IGNORECASE):
+                    elif message.str.match("|".join(element_error_re), flags=re.IGNORECASE)[index]:
                         prejudge_type = "element not found"
-                    elif message.str.match("|".join(env_issue_re), flags=re.IGNORECASE):
+                    elif message.str.match("|".join(env_issue_re), flags=re.IGNORECASE)[index]:
                         prejudge_type = "execution environment issue"
-                    elif message.str.match("|".join(net_issue_re), flags=re.IGNORECASE):
+                    elif message.str.match("|".join(net_issue_re), flags=re.IGNORECASE)[index]:
                         prejudge_type = "network issue"
                     else:
                         prejudge_type = "suspect bug"
-                elif message.str.match("|".join(net_issue_re), flags=re.IGNORECASE):
+                elif message.str.match("|".join(net_issue_re), flags=re.IGNORECASE)[index]:
                     prejudge_type = "network issue"
-                elif message.str.match("|".join(code_error_re), flags=re.IGNORECASE):
+                elif message.str.match("|".join(code_error_re), flags=re.IGNORECASE)[index]:
                     prejudge_type = "code error"
                 else:
                     prejudge_type = "other"
             else:
-                prejudge_type = case.eror_message
+                prejudge_type = case.eror_message[index]
         else:
-            prejudge_type = case.result
+            prejudge_type = case.result[index]
         return prejudge_type
 
     @classmethod
