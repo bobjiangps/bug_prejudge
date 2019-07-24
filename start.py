@@ -7,6 +7,7 @@ from fuzzywuzzy import fuzz
 from datetime import datetime
 import pandas as pd
 import os
+import json
 
 
 def generate_regression_history_data(db_conn, project_id, file_path):
@@ -69,7 +70,7 @@ if __name__ == "__main__":
     # preparation
     start_time = datetime.now()
     test_round_id = Config.load_env("test_round_id")
-    response = {"id": test_round_id, "message": None, "scripts": {}, "cases": {}}
+    response = {"id": test_round_id, "message": ""}
     data_folder = os.path.join(os.getcwd(), "data")
     if not os.path.exists(data_folder):
         os.mkdir(data_folder)
@@ -148,18 +149,19 @@ if __name__ == "__main__":
         else:
             print("go to simple prejudge")
             # todo
-            for index in range(len(round_errors)):
-                case = round_errors.iloc[[index]]
-                case_prejudge_result = SimplePrejudgeHelper.prejudge_case(case)
-                # print("case id: %d, prejudge result: %s" % (case.id, case_prejudge_result))
-                response["cases"][case.id[index]] = { "script_result_id": case.automation_script_result_id[index], "result": case_prejudge_result}
-            # for e in round_errors.itertuples():
-                # case_prejudge_result = SimplePrejudgeHelper.prejudge_case(e)
-                # print("case id: %d, prejudge result: %s" % (e.id, case_prejudge_result))
+            # for index in range(len(round_errors)):
+            #     case = round_errors.iloc[[index]]
+            #     case_prejudge_result = SimplePrejudgeHelper.prejudge_case(case)
+            #     response["cases"][case.id[index]] = { "script_result_id": case.automation_script_result_id[index], "result": case_prejudge_result}
+            response["scripts"] = SimplePrejudgeHelper.prejudge_all(round_all_results)
     else:
         print("go to simple prejudge")
         # todo, mark the pass and not-run results
 
-    print(response)
+    # response["scripts"] = SimplePrejudgeHelper.summarize_script_by_prejudged_case(response["cases"])
+    response["time"] = str(datetime.now())
+    if Config.load_env("response_into_file"):
+        with open(os.path.join(os.getcwd(), "data", "response.json"), "w") as f:
+            json.dump(response, f)
     end_time = datetime.now()
     print(f"duration: {end_time - start_time}")

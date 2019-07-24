@@ -3,6 +3,17 @@ import re
 
 class SimplePrejudgeHelper:
 
+    error_priority = {
+        "suspect bug": 1,
+        "element not found": 2,
+        "execution environment issue": 3,
+        "code error": 4,
+        "network issue": 5,
+        "other": 6,
+        "not-run": 7,
+        "pass": 8
+    }
+
     @classmethod
     def prejudge_case(cls, case):
         log_error_re = [".*in .?logger_error.*"]
@@ -41,22 +52,38 @@ class SimplePrejudgeHelper:
         return prejudge_type
 
     @classmethod
+    def prejudge_all(cls, cases):
+        script_result = {}
+        for index in range(len(cases)):
+            case = cases.iloc[[index]]
+            script_result_id = str(case.automation_script_result_id[index])
+            case_prejudge_result = cls.prejudge_case(case)
+            if script_result_id not in script_result.keys():
+                script_result[script_result_id] = { "result": case_prejudge_result, "cases": {str(case.id[index]): case_prejudge_result}}
+            else:
+                script_result[script_result_id]["cases"][str(case.id[index])] = case_prejudge_result
+                if cls.error_priority[case_prejudge_result] < cls.error_priority[script_result[script_result_id]["result"]]:
+                    script_result[script_result_id]["result"] = case_prejudge_result
+        return script_result
+
+    @classmethod
+    def summarize_script_by_prejudged_case(cls, case_results):
+        script_result = {}
+        for case in case_results.values():
+            if case["script_result_id"] not in script_result.keys():
+                script_result[case["script_result_id"]] = case["result"]
+            else:
+                if cls.error_priority[case["result"]] < cls.error_priority[script_result[case["script_result_id"]]]:
+                    script_result[case["script_result_id"]] = case["result"]
+        return script_result
+
+    @classmethod
     def prejudge_script(cls, script):
-        error_priority = {
-            "suspect bug": 1,
-            "element not found": 2,
-            "execution environment issue": 3,
-            "code error": 4,
-            "network issue": 5,
-            "other": 6,
-            "not-run": 7,
-            "pass": 8
-        }
         script_prejudge_type = ""
         script_prejudge_priority = 9
         for case in script:
             case_prejudge_type = cls.prejudge_case(case)
-            if error_priority[case_prejudge_type] < script_prejudge_priority:
+            if cls.error_priority[case_prejudge_type] < script_prejudge_priority:
                 script_prejudge_type = case_prejudge_type
-                script_prejudge_priority = error_priority[case_prejudge_type]
+                script_prejudge_priority = cls.error_priority[case_prejudge_type]
         return script_prejudge_type
