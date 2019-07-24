@@ -40,6 +40,7 @@ def generate_test_round_errors_data(db_conn, round_id, file_path):
 
 def generate_test_round_results_data(db_conn, round_id, file_path):
     test_round_results_sql = "SELECT * FROM automation_case_results where automation_script_result_id in (select id from automation_script_results where test_round_id=%d);" % int(round_id)
+    # test_round_results_sql = "SELECT * FROM automation_case_results where automation_script_result_id in (2609677, 2609831, 2609879, 2609971, 2610080, 2610095, 2610333, 2610366, 2610380, 2610415, 2609629, 2609636, 2609638, 2609644, 2609651, 2609663);"
     print("generate test round all results data")
     test_round_results = db_conn.get_all_results_from_database(test_round_results_sql)
     if len(test_round_results) == 0:
@@ -116,10 +117,11 @@ if __name__ == "__main__":
 
     # generate error data
     generate_error_result = generate_test_round_errors_data(regression_db, test_round_id, test_round_errors_file)
+    round_errors = pd.read_csv(test_round_errors_file)
     generate_all_result = generate_test_round_results_data(regression_db, test_round_id, test_round_all_results_file)
+    round_all_results = pd.read_csv(test_round_all_results_file)
 
     if generate_error_result:
-        round_errors = pd.read_csv(test_round_errors_file)
         # normal_round = False  # debug, will be removed
         if normal_round:
             most_failure_element = ErrorAnalyzer.check_element_caused_most_failures(round_errors)
@@ -134,7 +136,6 @@ if __name__ == "__main__":
 
         # check whether has triage history or not
         has_triage = None
-        round_all_results = pd.read_csv(test_round_all_results_file)
         if os.path.exists(triage_history_file):
             has_triage = True
         else:
@@ -148,15 +149,14 @@ if __name__ == "__main__":
             # todo
         else:
             print("go to simple prejudge")
-            # todo
             # for index in range(len(round_errors)):
             #     case = round_errors.iloc[[index]]
             #     case_prejudge_result = SimplePrejudgeHelper.prejudge_case(case)
-            #     response["cases"][case.id[index]] = { "script_result_id": case.automation_script_result_id[index], "result": case_prejudge_result}
+            #     response["cases"][case.id[index]] = {"script_result_id": case.automation_script_result_id[index], "result": case_prejudge_result}
             response["scripts"] = SimplePrejudgeHelper.prejudge_all(round_all_results)
     else:
         print("go to simple prejudge")
-        # todo, mark the pass and not-run results
+        response["scripts"] = SimplePrejudgeHelper.prejudge_all(round_all_results)
 
     # response["scripts"] = SimplePrejudgeHelper.summarize_script_by_prejudged_case(response["cases"])
     response["time"] = str(datetime.now())
