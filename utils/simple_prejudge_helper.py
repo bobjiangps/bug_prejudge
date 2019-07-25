@@ -54,16 +54,22 @@ class SimplePrejudgeHelper:
     @classmethod
     def prejudge_all(cls, cases):
         script_result = {}
-        for index in range(len(cases)):
-            case = cases.iloc[[index]]
-            script_result_id = str(case.automation_script_result_id[index])
+        if len(cases) > 1:
+            for index in range(len(cases)):
+                case = cases.iloc[[index]]
+                script_result_id = str(case.automation_script_result_id[index])
+                case_prejudge_result = cls.prejudge_case(case)
+                if script_result_id not in script_result.keys():
+                    script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.id[index]): case_prejudge_result}}
+                else:
+                    script_result[script_result_id]["cases"][str(case.id[index])] = case_prejudge_result
+                    if cls.error_priority[case_prejudge_result] < cls.error_priority[script_result[script_result_id]["result"]]:
+                        script_result[script_result_id]["result"] = case_prejudge_result
+        else:
+            case = cases.iloc[[0]]
+            script_result_id = str(case.automation_script_result_id[0])
             case_prejudge_result = cls.prejudge_case(case)
-            if script_result_id not in script_result.keys():
-                script_result[script_result_id] = { "result": case_prejudge_result, "cases": {str(case.id[index]): case_prejudge_result}}
-            else:
-                script_result[script_result_id]["cases"][str(case.id[index])] = case_prejudge_result
-                if cls.error_priority[case_prejudge_result] < cls.error_priority[script_result[script_result_id]["result"]]:
-                    script_result[script_result_id]["result"] = case_prejudge_result
+            script_result[script_result_id] = {"result": None, "cases": {str(case.id[0]): case_prejudge_result}}
         return script_result
 
     @classmethod
