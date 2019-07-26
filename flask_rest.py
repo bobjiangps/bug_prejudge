@@ -1,7 +1,6 @@
 from flask import Flask, request
 from flask_restful import Api, Resource
-import json
-import os
+from prejudge_process import PrejudgeProcess
 
 
 class Main(Resource):
@@ -17,9 +16,8 @@ class Main(Resource):
 class PrejudgeRound(Resource):
 
     def get(self, round_id):
-        os.system("python prejudge.py -tr %d" % round_id)
-        with open(os.path.join(os.getcwd(), "data", "response.json"), "r") as f:
-            result = json.load(f)
+        p = PrejudgeProcess(round_id=round_id)
+        result = p.run()
         return result
 
     # def post(self, round_id):
@@ -32,19 +30,18 @@ class PrejudgeRound(Resource):
 class PrejudgeScript(Resource):
 
     def get(self, round_id, script_id):
-        os.system("python prejudge.py -tr %d -ts %d" % (round_id, script_id))
-        with open(os.path.join(os.getcwd(), "data", "response.json"), "r") as f:
-            result = json.load(f)
+        p = PrejudgeProcess(round_id=round_id, script_id=script_id)
+        result = p.run()
         return result
 
 
 class PrejudgeCase(Resource):
 
     def get(self, round_id, script_id, case_id):
-        os.system("python prejudge.py -tr %d -ts %d -tc %d" % (round_id, script_id, case_id))
-        with open(os.path.join(os.getcwd(), "data", "response.json"), "r") as f:
-            result = json.load(f)
+        p = PrejudgeProcess(round_id=round_id, script_id=script_id, case_id=case_id)
+        result = p.run()
         return result
+
 
 app = Flask(__name__)
 api = Api(app)

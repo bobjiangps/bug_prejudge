@@ -12,7 +12,7 @@ import json
 
 def generate_regression_history_data(db_conn, project_id, file_path):
     generate_flag = Config.load_env("generate_regression_history")
-    if not os.path.exists(regression_history_file):
+    if not os.path.exists(file_path):
         generate_flag = True
     if generate_flag:
         print("generate history regression data")
