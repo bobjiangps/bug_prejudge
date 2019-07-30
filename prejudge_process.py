@@ -90,9 +90,9 @@ class PrejudgeProcess:
                 has_triage = self.generate_triage_history_data(prejudge_db, project_name, triage_history_file)
 
             # different logic with has_triage flag
-            has_triage = False  # debug, remove
             if has_triage:
                 print("go to detail prejudge")
+                response["scripts"] = SimplePrejudgeHelper.prejudge_all(round_all_results)  # debug, remove
                 # todo
             else:
                 print("go to simple prejudge")
