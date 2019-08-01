@@ -14,39 +14,39 @@ class SimplePrejudgeHelper:
         "pass": 8
     }
 
+    log_error_re = [".*in .?logger_error.*"]
+    assert_fail_re = [".*Assert -.*- failed.*"]
+    element_error_re = [".*Execute - wait \w*::\w* to present.*", ".*The element.*does not exist.*",
+                        ".*Execute - open .*::.*- failed.*", ".*Execute - select .*::.*- failed.*"]
+    env_issue_re = [".*Driver info:.*", ".*no implicit conversion.*", ".*Internal Server Error.*"]
+    net_issue_re = [".*Net::ReadTimeout.*", ".*Request Timeout.*"]
+    code_error_re = [".*undefined method.*", ".*undefined local variable.*", ".*uninitialized constant.*"]
+
     @classmethod
     def prejudge_case(cls, case):
-        log_error_re = [".*in .?logger_error.*"]
-        assert_fail_re = [".*Assert -.*- failed.*"]
-        element_error_re = [".*Execute - wait \w*::\w* to present.*", ".*The element.*does not exist.*",
-                            ".*Execute - open .*::.*- failed.*", ".*Execute - select .*::.*- failed.*"]
-        env_issue_re = [".*Driver info:.*", ".*no implicit conversion.*", ".*Internal Server Error.*"]
-        net_issue_re = [".*Net::ReadTimeout.*", ".*Request Timeout.*"]
-        code_error_re = [".*undefined method.*", ".*undefined local variable.*", ".*uninitialized constant.*"]
-
         index = case.index.values[0]
         if case.result[index] == "failed":
             if case.error_message[index]:
                 message = case.error_message
-                if message.str.match("|".join(log_error_re), flags=re.IGNORECASE)[index]:
-                    if message.str.match("|".join(assert_fail_re), flags=re.IGNORECASE)[index]:
+                if message.str.match("|".join(cls.log_error_re), flags=re.IGNORECASE)[index]:
+                    if message.str.match("|".join(cls.assert_fail_re), flags=re.IGNORECASE)[index]:
                         prejudge_type = "suspect bug"
-                    elif message.str.match("|".join(element_error_re), flags=re.IGNORECASE)[index]:
+                    elif message.str.match("|".join(cls.element_error_re), flags=re.IGNORECASE)[index]:
                         prejudge_type = "element not found"
-                    elif message.str.match("|".join(env_issue_re), flags=re.IGNORECASE)[index]:
+                    elif message.str.match("|".join(cls.env_issue_re), flags=re.IGNORECASE)[index]:
                         prejudge_type = "execution environment issue"
-                    elif message.str.match("|".join(net_issue_re), flags=re.IGNORECASE)[index]:
+                    elif message.str.match("|".join(cls.net_issue_re), flags=re.IGNORECASE)[index]:
                         prejudge_type = "network issue"
                     else:
                         prejudge_type = "suspect bug"
-                elif message.str.match("|".join(net_issue_re), flags=re.IGNORECASE)[index]:
+                elif message.str.match("|".join(cls.net_issue_re), flags=re.IGNORECASE)[index]:
                     prejudge_type = "network issue"
-                elif message.str.match("|".join(code_error_re), flags=re.IGNORECASE)[index]:
+                elif message.str.match("|".join(cls.code_error_re), flags=re.IGNORECASE)[index]:
                     prejudge_type = "code error"
                 else:
                     prejudge_type = "other"
             else:
-                prejudge_type = case.eror_message[index]
+                prejudge_type = case.error_message[index]
         else:
             prejudge_type = case.result[index]
         return prejudge_type
@@ -93,3 +93,27 @@ class SimplePrejudgeHelper:
                 script_prejudge_type = case_prejudge_type
                 script_prejudge_priority = cls.error_priority[case_prejudge_type]
         return script_prejudge_type
+
+    @classmethod
+    def prejudge_error_message(cls, error_message):
+        if error_message and str(error_message) != "nan":
+            if re.search("|".join(cls.log_error_re), error_message, re.IGNORECASE):
+                if re.search("|".join(cls.assert_fail_re), error_message, re.IGNORECASE):
+                    prejudge_type = "suspect bug"
+                elif re.search("|".join(cls.element_error_re), error_message, re.IGNORECASE):
+                    prejudge_type = "element not found"
+                elif re.search("|".join(cls.env_issue_re), error_message, re.IGNORECASE):
+                    prejudge_type = "execution environment issue"
+                elif re.search("|".join(cls.net_issue_re), error_message, re.IGNORECASE):
+                    prejudge_type = "network issue"
+                else:
+                    prejudge_type = "suspect bug"
+            elif re.search("|".join(cls.net_issue_re), error_message, re.IGNORECASE):
+                prejudge_type = "network issue"
+            elif re.search("|".join(cls.code_error_re), error_message, re.IGNORECASE):
+                prejudge_type = "code error"
+            else:
+                prejudge_type = "other"
+        else:
+            prejudge_type = error_message
+        return prejudge_type
