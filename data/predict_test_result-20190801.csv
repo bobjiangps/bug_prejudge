@@ -1,0 +1,574 @@
+,round_id,automation_case_id,automation_script_id,env,browser,error_message,script_duration,error_type,predict_triage,actual,predict result
+0,98251,23339434,137718,LV-REG,chrome,"[2019-07-12 01:40:10] -- https://apisandbox.crowdrise.com/authorize?client_id=Dhwwf8EdbuYavZiYSFh56972c0b9e3ea&response_type=code&redirect_uri=https%3A%2F%2Fenduranceui-vip.reg.aw.dev.activenetwork.com%2Fcrowdrise%2Fauthentication%3Fstate%3De404d63d-c389-49a6-8fb9-825aed9e58cd&state=e404d63d-c389-49a6-8fb9-825aed9e58cd
+Execute - wait EnduranceAuiEventCrowdRise::AuthorizeGrantAccessButton to present - failed. the element with the property xpath and value //button[text()=""Grant Access""] was not found in 20 seconds
+ -- Execute - wait EnduranceAuiEventCrowdRise::AuthorizeGrantAccessButton to present - failed. the element with the property xpath and value //button[text()=""Grant Access""] was not found in 20 seconds
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:260:in `block in wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `times""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/workflow/crowdrise/workflow_endurance_aui_crowdrise.rb:155:in `signup_new_crowdrise_account_and_grant_access""
+./endurance/functional_case/crowd_rise/endurance_function_crowdrise_user_authentication_t36520/action1_crowdrise_user_authentication_t36520.rb:89:in `block in action1""",363,element not found,Dynamic Issue,environment issue,0
+1,98251,23340765,141486,LV-REG,chrome,"[2019-07-12 01:37:14] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/T28688ProToEliteSmallAgency20190712013547#/active/endurance/home?_nid=53615623
+Execute - wait EnduranceAuiHome::UpgradeYourAccountButton to present - failed. the element with the property link and value Upgrade your account was not found in 30 seconds
+ -- Execute - wait EnduranceAuiHome::UpgradeYourAccountButton to present - failed. the element with the property link and value Upgrade your account was not found in 30 seconds
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:260:in `block in wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `times""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `wait_element_present""
+./endurance/functional_case/upgrade_account/endurance_function_upgrade_account_collect_signature_t28688_part2/action1_upgrade_account_collect_signature_t28688_part2.rb:97:in `block in action_block_1""",347,element not found,Dynamic Issue,environment issue,0
+2,98251,23340767,141486,LV-REG,chrome,"[2019-07-12 01:40:05] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/T28688PremiumToEliteMidRightAgency20190712013841#/active/endurance/home?_nid=5392772
+Execute - wait EnduranceAuiHome::UpgradeYourAccountButton to present - failed. the element with the property link and value Upgrade your account was not found in 30 seconds
+ -- Execute - wait EnduranceAuiHome::UpgradeYourAccountButton to present - failed. the element with the property link and value Upgrade your account was not found in 30 seconds
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:260:in `block in wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `times""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `wait_element_present""
+./endurance/functional_case/upgrade_account/endurance_function_upgrade_account_collect_signature_t28688_part2/action1_upgrade_account_collect_signature_t28688_part2.rb:260:in `block in action_block_1""",347,element not found,Dynamic Issue,environment issue,0
+3,98251,23339907,142688,LV-REG,chrome,"[2019-07-12 01:38:15] -- https://vmodcui-vip.reg.aw.dev.activenetwork.com/responsive/eventGroups/770201/review
+Execute - wait EnduranceVolunteerCuiReviewAndSubmit::DeleteJobPopUpContent to disapper in 30 secs - failed. the element with xpath and //div[@class=""modal-dialog"" and @role=""document""]//div[@class=""modal-body""] was still found in 30 seconds
+ -- Execute - wait EnduranceVolunteerCuiReviewAndSubmit::DeleteJobPopUpContent to disapper in 30 secs - failed. the element with xpath and //div[@class=""modal-dialog"" and @role=""document""]//div[@class=""modal-body""] was still found in 30 seconds
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:220:in `block in wait_element_disappear""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:216:in `times""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:216:in `wait_element_disappear""
+./endurance/functional_case/volunteer/endurance_function_volunteer_cui_review_submit_reg_t25547_part3/action1_volunteer_cui_review_submit_reg_t25547_part3.rb:204:in `block in action_block_1""",235,suspect bug,Product Error,dynamic issue,0
+4,98251,23339911,144143,LV-REG,chrome,"[2019-07-12 01:36:33] -- https://vmodcui-vip.reg.aw.dev.activenetwork.com/responsive/eventGroups/1036701/form?jobIds=2555001&refresh=true
+Execute - select checkbox EnduranceVolunteerCuiCompleteForm::WaiverCheckboxByName - failed. can""t select this checkbox, get error element not interactable
+  (Session info: chrome=75.0.3770.100)
+ -- Execute - select checkbox EnduranceVolunteerCuiCompleteForm::WaiverCheckboxByName - failed. can""t select this checkbox, get error element not interactable
+  (Session info: chrome=75.0.3770.100)
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/library/endurance/volunteer_cui/endurance_volunteer_cui_complete_form.rb:173:in `rescue in select""
+/java_farm_client/target/GitLab/endurance/git/library/endurance/volunteer_cui/endurance_volunteer_cui_complete_form.rb:166:in `select""
+/java_farm_client/target/GitLab/endurance/git/workflow/volunteer_cui/workflow_endurance_volunteer_cui_registration.rb:104:in `set_waiver""
+./endurance/functional_case/volunteer/endurance_function_volunteer_cui_waiver_signature_t25406_part1/action1_volunteer_cui_waiver_signature_t25406_part1.rb:261:in `block (2 levels) in action_block_1""
+./endurance/functional_case/volunteer/endurance_function_volunteer_cui_waiver_signature_t25406_part1/action1_volunteer_cui_waiver_signature_t25406_part1.rb:260:in `each""
+./endurance/functional_case/volunteer/endurance_function_volunteer_cui_waiver_signature_t25406_part1/action1_volunteer_cui_waiver_signature_t25406_part1.rb:260:in `block in action_block_1""",185,element not found,Dynamic Issue,product change,0
+5,98251,23339912,144143,LV-REG,chrome,"[2019-07-12 01:37:12] -- https://vmodcui-vip.reg.aw.dev.activenetwork.com/responsive/eventGroups/1036701/form?jobIds=2555001&refresh=true
+Execute - select checkbox EnduranceVolunteerCuiCompleteForm::WaiverCheckboxByName - failed. can""t select this checkbox, get error element not interactable
+  (Session info: chrome=75.0.3770.100)
+ -- Execute - select checkbox EnduranceVolunteerCuiCompleteForm::WaiverCheckboxByName - failed. can""t select this checkbox, get error element not interactable
+  (Session info: chrome=75.0.3770.100)
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/library/endurance/volunteer_cui/endurance_volunteer_cui_complete_form.rb:173:in `rescue in select""
+/java_farm_client/target/GitLab/endurance/git/library/endurance/volunteer_cui/endurance_volunteer_cui_complete_form.rb:166:in `select""
+/java_farm_client/target/GitLab/endurance/git/workflow/volunteer_cui/workflow_endurance_volunteer_cui_registration.rb:104:in `set_waiver""
+./endurance/functional_case/volunteer/endurance_function_volunteer_cui_waiver_signature_t25406_part1/action1_volunteer_cui_waiver_signature_t25406_part1.rb:311:in `block (2 levels) in action_block_1""
+./endurance/functional_case/volunteer/endurance_function_volunteer_cui_waiver_signature_t25406_part1/action1_volunteer_cui_waiver_signature_t25406_part1.rb:310:in `each""
+./endurance/functional_case/volunteer/endurance_function_volunteer_cui_waiver_signature_t25406_part1/action1_volunteer_cui_waiver_signature_t25406_part1.rb:310:in `block in action_block_1""",185,element not found,Dynamic Issue,product change,0
+6,98251,23338926,145855,LV-REG,chrome,"[2019-07-12 01:36:00] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/gerryracepass#/active/endurance/racePass/home?_nid=53454837
+The race pass is not deleted in DB
+ -- The race pass is not deleted in DB
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+./endurance/functional_case/race_pass/endurance_function_aui_race_pass_setup_ui_part2_t39598/action1_aui_race_pass_t39598.rb:152:in `block in action1""",161,suspect bug,Product Error,script issue,0
+7,98251,23338927,145855,LV-REG,chrome,"[2019-07-12 01:36:48] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/gerryracepass#/active/endurance/racePass/home?_nid=53454837
+Execute - select checkbox EnduranceRacePass::SelectEventCheckbox - failed. can""t select this checkbox, get error element click intercepted: Element <label for=""a9f39197-e88e-8400-0f7c-3765e6510a79"" class=""odd"">...</label> is not clickable at point (936, 187). Other element would receive the click: <div class=""background""></div>
+  (Session info: chrome=75.0.3770.100)
+ -- Execute - select checkbox EnduranceRacePass::SelectEventCheckbox - failed. can""t select this checkbox, get error element click intercepted: Element <label for=""a9f39197-e88e-8400-0f7c-3765e6510a79"" class=""odd"">...</label> is not clickable at point (936, 187). Other element would receive the click: <div class=""background""></div>
+  (Session info: chrome=75.0.3770.100)
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/active_checkbox.rb:29:in `rescue in select""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/active_checkbox.rb:25:in `select""
+./endurance/functional_case/race_pass/endurance_function_aui_race_pass_setup_ui_part2_t39598/action1_aui_race_pass_t39598.rb:168:in `block in action1""",161,element not found,Dynamic Issue,script issue,0
+8,98251,23339274,145241,LV-REG,chrome,"[2019-07-12 01:38:49] -- https://endurancecui-vip.reg.aw.dev.activenetwork.com/new/events/55065051/forms?_p=6824521702245667&locale=en_US
+Assert  - check text of EnduranceCUIMultiCompleteForm::RegInfoQuestionInput - failed. get  from page, while emergency1 is expected
+ -- Assert  - check text of EnduranceCUIMultiCompleteForm::RegInfoQuestionInput - failed. get  from page, while emergency1 is expected
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:322:in `check_text""
+./endurance/functional_case/cui_single_page/endurance_function_cui_single_page_copy_questions_t33930/action1_cui_single_page_copy_questions_t33930.rb:158:in `block in action1""",439,suspect bug,Product Error,product error,1
+9,98251,23338966,144862,LV-REG,chrome," -- undefined method `include?' for nil:NilClass
+407----->        def start_cui_page(cui_url, language = 'en_us')
+408----->          languages = language.split( _ )
+409----->          cui_url =  cui_url +  &amp;locale=#{languages[0]}_#{languages[1].upcase}  unless cui_url.include?( &amp;locale= )
+410----->          Helper::Endurance.restart_non_blank_browser
+411----->          Common.logger_info  The cui_url is: #{cui_url} 
+/java_farm_client/target/GitLab/endurance/git/workflow/cui/workflow_endurance_cui_common.rb:409:in `start_cui_page'
+./endurance/functional_case/cui_single_page/endurance_function_cui_single_page_just_giving_individual_part2/individual_just_giving_new_account.rb:56:in `block in action1'",8,code error,Dynamic Issue,script issue,0
+10,98251,23339044,146192,LV-REG,chrome,"[2019-07-12 01:37:18] -- https://endurancecui-vip.reg.aw.dev.activenetwork.com/new/events/55727151/forms?_p=43017784715367346&locale=en_US
+prospective registration info by email checking fail
+ -- prospective registration info by email checking fail
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+./endurance/functional_case/cui_single_page/endurance_function_cui_single_page_prospective_email_t40043_part2/action1_cui_single_page_email_t40043_part2.rb:62:in `block in action1""",208,suspect bug,Product Error,dynamic issue,0
+11,98251,23338607,145378,LV-REG,chrome,"[2019-07-12 01:42:47] -- https://endurancecui-vip.reg.aw.dev.activenetwork.com/new/events/48652152/select-race?refresh=true&locale=en_US&_p=8670387256064969
+EnduranceCUILogin::NewUserEmailTextInput.input - The element with the property name and value email does not exist.
+ -- EnduranceCUILogin::NewUserEmailTextInput.input - The element with the property name and value email does not exist.
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/library/override/element_base.rb:182:in `input""
+/java_farm_client/target/GitLab/endurance/git/library/endurance/cui/endurance_cui_login.rb:93:in `input""
+/java_farm_client/target/GitLab/endurance/git/workflow/cui/workflow_endurance_cui_registration_flow.rb:922:in `input_new_user_and_continue""
+/java_farm_client/target/GitLab/endurance/git/workflow/cui/workflow_endurance_cui_registration_flow.rb:930:in `login_with_new_user_v1""
+/java_farm_client/target/GitLab/endurance/git/workflow/cui/workflow_endurance_cui_registration_flow.rb:947:in `login_with_new_user""
+/java_farm_client/target/GitLab/endurance/git/workflow/cui/workflow_endurance_cui_registration_flow.rb:1013:in `login_with_user_email""
+./endurance/functional_case/cui/endurance_function_cui_waiver_hide_t34969/action1_cui_waiver_hide_t34969.rb:242:in `block in action_block_1""",645,element not found,Dynamic Issue,product change,0
+12,98251,23339991,146164,LV-REG,chrome,"[2019-07-12 01:35:33] -- https://vmodcui-vip.reg.aw.dev.activenetwork.com/responsive/eventGroups/771002/form?jobIds=2311402&refresh=true
+Execute - select checkbox EnduranceVolunteerCuiCompleteForm::WaiverCheckboxByName - failed. can""t select this checkbox, get error element not interactable
+  (Session info: chrome=75.0.3770.100)
+ -- Execute - select checkbox EnduranceVolunteerCuiCompleteForm::WaiverCheckboxByName - failed. can""t select this checkbox, get error element not interactable
+  (Session info: chrome=75.0.3770.100)
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/library/endurance/volunteer_cui/endurance_volunteer_cui_complete_form.rb:173:in `rescue in select""
+/java_farm_client/target/GitLab/endurance/git/library/endurance/volunteer_cui/endurance_volunteer_cui_complete_form.rb:166:in `select""
+/java_farm_client/target/GitLab/endurance/git/workflow/volunteer_cui/workflow_endurance_volunteer_cui_registration.rb:104:in `set_waiver""
+./endurance/functional_case/volunteer/endurance_function_volunteer_cui_waiver_signature_t25406_part2/action1_volunteer_cui_waiver_signature_t25406_part2.rb:69:in `block (2 levels) in action_block_1""
+./endurance/functional_case/volunteer/endurance_function_volunteer_cui_waiver_signature_t25406_part2/action1_volunteer_cui_waiver_signature_t25406_part2.rb:68:in `each""
+./endurance/functional_case/volunteer/endurance_function_volunteer_cui_waiver_signature_t25406_part2/action1_volunteer_cui_waiver_signature_t25406_part2.rb:68:in `block in action_block_1""",197,element not found,Dynamic Issue,product change,0
+13,98251,23339993,146164,LV-REG,chrome,"[2019-07-12 01:37:54] -- https://vmodcui-vip.reg.aw.dev.activenetwork.com/responsive/eventGroups/771002/form?jobIds=2311402&refresh=true
+Execute - select checkbox EnduranceVolunteerCuiCompleteForm::WaiverCheckboxByName - failed. can""t select this checkbox, get error element not interactable
+  (Session info: chrome=75.0.3770.100)
+ -- Execute - select checkbox EnduranceVolunteerCuiCompleteForm::WaiverCheckboxByName - failed. can""t select this checkbox, get error element not interactable
+  (Session info: chrome=75.0.3770.100)
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/library/endurance/volunteer_cui/endurance_volunteer_cui_complete_form.rb:173:in `rescue in select""
+/java_farm_client/target/GitLab/endurance/git/library/endurance/volunteer_cui/endurance_volunteer_cui_complete_form.rb:166:in `select""
+/java_farm_client/target/GitLab/endurance/git/workflow/volunteer_cui/workflow_endurance_volunteer_cui_registration.rb:104:in `set_waiver""
+./endurance/functional_case/volunteer/endurance_function_volunteer_cui_waiver_signature_t25406_part2/action1_volunteer_cui_waiver_signature_t25406_part2.rb:235:in `block (2 levels) in action_block_1""
+./endurance/functional_case/volunteer/endurance_function_volunteer_cui_waiver_signature_t25406_part2/action1_volunteer_cui_waiver_signature_t25406_part2.rb:234:in `each""
+./endurance/functional_case/volunteer/endurance_function_volunteer_cui_waiver_signature_t25406_part2/action1_volunteer_cui_waiver_signature_t25406_part2.rb:234:in `block in action_block_1""",197,element not found,Dynamic Issue,product change,0
+14,98251,23338008,146717,LV-REG,chrome,"[2019-07-12 01:34:57] -- the length is not equal,actual:4,expect:3
+ -- the length is not equal,actual:4,expect:3
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/api_test.rb:11:in `response_node_equal?""
+./endurance/functional_case/api/endurance_function_internal_api_dashboard_registration_trends/action1_internal_dashboard_registration_trends.rb:62:in `block in action_block_1""",26,suspect bug,Product Error,script issue,0
+15,98251,23338009,146717,LV-REG,chrome,"[2019-07-12 01:34:57] -- the length is not equal,actual:4,expect:3
+ -- the length is not equal,actual:4,expect:3
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/api_test.rb:11:in `response_node_equal?""
+./endurance/functional_case/api/endurance_function_internal_api_dashboard_registration_trends/action1_internal_dashboard_registration_trends.rb:76:in `block in action_block_1""",26,suspect bug,Product Error,script issue,0
+16,98251,23338010,146717,LV-REG,chrome,"[2019-07-12 01:34:58] -- the length is not equal,actual:4,expect:3
+ -- the length is not equal,actual:4,expect:3
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/api_test.rb:11:in `response_node_equal?""
+./endurance/functional_case/api/endurance_function_internal_api_dashboard_registration_trends/action1_internal_dashboard_registration_trends.rb:90:in `block in action_block_1""",26,suspect bug,Product Error,script issue,0
+17,98251,23338011,146717,LV-REG,chrome,"[2019-07-12 01:34:58] -- the length is not equal,actual:4,expect:3
+ -- the length is not equal,actual:4,expect:3
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/api_test.rb:11:in `response_node_equal?""
+./endurance/functional_case/api/endurance_function_internal_api_dashboard_registration_trends/action1_internal_dashboard_registration_trends.rb:105:in `block (2 levels) in action_block_1""
+./endurance/functional_case/api/endurance_function_internal_api_dashboard_registration_trends/action1_internal_dashboard_registration_trends.rb:104:in `each""
+./endurance/functional_case/api/endurance_function_internal_api_dashboard_registration_trends/action1_internal_dashboard_registration_trends.rb:104:in `block in action_block_1""",26,suspect bug,Product Error,script issue,0
+18,98251,23338012,146717,LV-REG,chrome,"[2019-07-12 01:34:58] -- the length is not equal,actual:4,expect:3
+ -- the length is not equal,actual:4,expect:3
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/api_test.rb:11:in `response_node_equal?""
+./endurance/functional_case/api/endurance_function_internal_api_dashboard_registration_trends/action1_internal_dashboard_registration_trends.rb:120:in `block in action_block_1""",26,suspect bug,Product Error,script issue,0
+19,98251,23338013,146717,LV-REG,chrome,"[2019-07-12 01:34:58] -- the length is not equal,actual:4,expect:3
+ -- the length is not equal,actual:4,expect:3
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/api_test.rb:11:in `response_node_equal?""
+./endurance/functional_case/api/endurance_function_internal_api_dashboard_registration_trends/action1_internal_dashboard_registration_trends.rb:134:in `block in action_block_1""",26,suspect bug,Product Error,script issue,0
+20,98251,23338014,146717,LV-REG,chrome,"[2019-07-12 01:34:58] -- the length is not equal,actual:4,expect:3
+ -- the length is not equal,actual:4,expect:3
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/api_test.rb:11:in `response_node_equal?""
+./endurance/functional_case/api/endurance_function_internal_api_dashboard_registration_trends/action1_internal_dashboard_registration_trends.rb:149:in `block (2 levels) in action_block_1""
+./endurance/functional_case/api/endurance_function_internal_api_dashboard_registration_trends/action1_internal_dashboard_registration_trends.rb:148:in `each""
+./endurance/functional_case/api/endurance_function_internal_api_dashboard_registration_trends/action1_internal_dashboard_registration_trends.rb:148:in `block in action_block_1""",26,suspect bug,Product Error,script issue,0
+21,98251,23338015,146717,LV-REG,chrome,"[2019-07-12 01:34:59] -- the length is not equal,actual:4,expect:3
+ -- the length is not equal,actual:4,expect:3
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/api_test.rb:11:in `response_node_equal?""
+./endurance/functional_case/api/endurance_function_internal_api_dashboard_registration_trends/action1_internal_dashboard_registration_trends.rb:165:in `block (2 levels) in action_block_1""
+./endurance/functional_case/api/endurance_function_internal_api_dashboard_registration_trends/action1_internal_dashboard_registration_trends.rb:164:in `each""
+./endurance/functional_case/api/endurance_function_internal_api_dashboard_registration_trends/action1_internal_dashboard_registration_trends.rb:164:in `block in action_block_1""",26,suspect bug,Product Error,script issue,0
+22,98251,23339585,146728,LV-REG,chrome,"[2019-07-12 01:38:01] -- https://activeworksui-vip.reg.aw.dev.activenetwork.com/?aui=https%3A%2F%2Fenduranceui-vip.reg.aw.dev.activenetwork.com%2Ft19410_third_merchandise_20190712013453
+Execute - wait EnduranceSettingsManagePartners::DeletePartnerButton to present - failed. the element with the property id and value deletePartner was not found in 30 seconds
+ -- Execute - wait EnduranceSettingsManagePartners::DeletePartnerButton to present - failed. the element with the property id and value deletePartner was not found in 30 seconds
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:260:in `block in wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `times""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `wait_element_present""
+./endurance/functional_case/third_party/endurance_function_third_party_delete_invitation_t19410/action1_third_party_delete_invitation_t19410.rb:105:in `block in action_block_1""",343,element not found,Product Error,data issue,0
+23,98251,23339586,146728,LV-REG,chrome,"[2019-07-12 01:39:01] -- https://activeworksui-vip.reg.aw.dev.activenetwork.com/?aui=https%3A%2F%2Fenduranceui-vip.reg.aw.dev.activenetwork.com%2Ft19410_third_merchandise_20190712013453
+Execute - wait EnduranceThirdPartyMerchandiseEditHome::AdvanceSettingsTopLink to present - failed. the element with the property xpath and value //a[contains(@class,""primary-advance-link"") and contains(text(),""Advanced settings"")] was not found in 30 seconds
+ -- Execute - wait EnduranceThirdPartyMerchandiseEditHome::AdvanceSettingsTopLink to present - failed. the element with the property xpath and value //a[contains(@class,""primary-advance-link"") and contains(text(),""Advanced settings"")] was not found in 30 seconds
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:260:in `block in wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `times""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `wait_element_present""
+./endurance/functional_case/third_party/endurance_function_third_party_delete_invitation_t19410/action1_third_party_delete_invitation_t19410.rb:285:in `go_to_merchandise_advance_setting_by_name""
+./endurance/functional_case/third_party/endurance_function_third_party_delete_invitation_t19410/action1_third_party_delete_invitation_t19410.rb:143:in `block in action_block_1""",343,element not found,Product Error,data issue,0
+24,98251,23339587,146728,LV-REG,chrome," -- undefined method `merge' for nil:NilClass
+488----->        group_advance_settings[ priceCategories ] = group_price_ids
+489----->        addon_template = get_third_party_addon_template_by_event_id(@@event_id,addon_name,language,currency)
+490----->        addon_template = addon_template.merge({ eventId  =&gt; @@event_id,  restrictions  =&gt; group_advance_settings})
+491----->        addon_template[ reportLabel ] =  #{addon_template[ name ]} Offered by #{addon_template[ partnerName ]} 
+492----->        unless group_advance_settings[ report_label ].nil?
+/java_farm_client/target/GitLab/endurance/git/library/service_call/fndwebserver_endurance/json_api/endurance_web_service_event_setup.rb:490:in `create_third_party_addon'
+./endurance/functional_case/third_party/endurance_function_third_party_delete_invitation_t19410/action1_third_party_delete_invitation_t19410.rb:185:in `block in action_block_1'",343,code error,Product Error,data issue,0
+25,98251,23339588,146728,LV-REG,chrome," -- undefined method `merge' for nil:NilClass
+488----->        group_advance_settings[ priceCategories ] = group_price_ids
+489----->        addon_template = get_third_party_addon_template_by_event_id(@@event_id,addon_name,language,currency)
+490----->        addon_template = addon_template.merge({ eventId  =&gt; @@event_id,  restrictions  =&gt; group_advance_settings})
+491----->        addon_template[ reportLabel ] =  #{addon_template[ name ]} Offered by #{addon_template[ partnerName ]} 
+492----->        unless group_advance_settings[ report_label ].nil?
+/java_farm_client/target/GitLab/endurance/git/library/service_call/fndwebserver_endurance/json_api/endurance_web_service_event_setup.rb:490:in `create_third_party_addon'
+./endurance/functional_case/third_party/endurance_function_third_party_delete_invitation_t19410/action1_third_party_delete_invitation_t19410.rb:237:in `block in action_block_1'",343,code error,Product Error,data issue,0
+26,98251,23339013,147738,LV-REG,chrome,"[2019-07-12 01:37:35] -- https://endurancecui-vip.reg.aw.dev.activenetwork.com/new/events/56002951/select-race?refresh=true&locale=en_US&_p=9499034807398741
+Assert  - check text of EnduranceCUIPriceTypeSelection::PriceFeeText - failed. get $12.00 from page, while SOLD OUT is expected
+ -- Assert  - check text of EnduranceCUIPriceTypeSelection::PriceFeeText - failed. get $12.00 from page, while SOLD OUT is expected
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:322:in `check_text""
+./endurance/functional_case/cui_single_page/endurance_function_cui_single_page_prepaid_team_t39726_part3/action1_cui_single_page_prepay_t39726_part3.rb:56:in `block in action1""",167,suspect bug,Product Error,data issue,0
+27,98251,23339529,143123,LV-REG,chrome,"[2019-07-12 01:36:27] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/normal_agency_t20099_20190225_1#/active/endurance/event/discounts/discountsHome?eventId=&eventName=
+Execute - wait EnduranceAuiDiscount::CreateButton to present - failed. the element with the property id and value createButton was not found in 10 seconds
+ -- Execute - wait EnduranceAuiDiscount::CreateButton to present - failed. the element with the property id and value createButton was not found in 10 seconds
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:260:in `block in wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `times""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/library/override/element_base.rb:56:in `click""
+./endurance/functional_case/third_party/endurance_function_third_party_not_allowed_apply_coupon_t20099/action1_third_party_not_allowed_apply_coupon_t20099.rb:56:in `block in action_block_1""",183,element not found,Dynamic Issue,,
+28,98251,23339530,143123,LV-REG,chrome,"[2019-07-12 01:37:36] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/normal_agency_t20099_20190225_1#/active/endurance/event/discounts/discountsHome?eventId=&eventName=
+Execute - wait EnduranceAuiDiscountEdit::AdditionalPurchaseCheckbox to present - failed. the element with the property xpath and value //ul[@id=""additionalPurchasesCheckboxTree""]//div[contains(.,""Jersay"") and @class=""checkbox""] was not found in 10 seconds
+ -- Execute - wait EnduranceAuiDiscountEdit::AdditionalPurchaseCheckbox to present - failed. the element with the property xpath and value //ul[@id=""additionalPurchasesCheckboxTree""]//div[contains(.,""Jersay"") and @class=""checkbox""] was not found in 10 seconds
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:260:in `block in wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `times""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/library/override/element_base.rb:103:in `should_exist""
+./endurance/functional_case/third_party/endurance_function_third_party_not_allowed_apply_coupon_t20099/action1_third_party_not_allowed_apply_coupon_t20099.rb:104:in `block in action_block_1""",183,element not found,Dynamic Issue,,
+29,98251,23339532,143123,LV-REG,chrome,"[2019-07-12 01:37:51] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/normal_agency_t20099_20190225_1#/active/endurance/event/discounts/discountsHome?eventId=&eventName=
+Execute - wait EnduranceAuiDiscount::CreateButton to present - failed. the element with the property id and value createButton was not found in 10 seconds
+ -- Execute - wait EnduranceAuiDiscount::CreateButton to present - failed. the element with the property id and value createButton was not found in 10 seconds
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:260:in `block in wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `times""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/library/override/element_base.rb:56:in `click""
+./endurance/functional_case/third_party/endurance_function_third_party_not_allowed_apply_coupon_t20099/action1_third_party_not_allowed_apply_coupon_t20099.rb:166:in `block in action_block_1""",183,element not found,Dynamic Issue,,
+30,98251,23339455,139217,LV-REG,chrome,"[2019-07-12 01:37:44] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/invited_but_inactive_agency_19408_20190712013622#/active/endurance/home?_nid=53644260
+Whoops, No email found from db on top of invitee email confirmedt19408_20190712013556@null.com
+ -- Whoops, No email found from db on top of invitee email confirmedt19408_20190712013556@null.com
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/workflow/third_party/workflow_endurance_third_party_invite_partner.rb:44:in `get_invite_partner_email_by_invitee_email""
+/java_farm_client/target/GitLab/endurance/git/workflow/third_party/workflow_endurance_third_party_invite_partner.rb:69:in `get_partner_invitation_reponse_url""
+/java_farm_client/target/GitLab/endurance/git/workflow/third_party/workflow_endurance_third_party_common.rb:84:in `accept_partner_invitation""
+./endurance/functional_case/third_party/endurance_function_third_party_setting_partner_t19408_part2/action1_third_party_setting_partner_t19408_part2.rb:78:in `block in action_block_1""",692,suspect bug,Product Error,,
+31,98251,23339456,139217,LV-REG,chrome,"[2019-07-12 01:38:51] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/invited_but_inactive_agency_19408_20190712013622#/active/endurance/home?_nid=53644260
+Whoops, No email found from db on top of invitee email invited_inactive_20190712013622@null.com
+ -- Whoops, No email found from db on top of invitee email invited_inactive_20190712013622@null.com
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/workflow/third_party/workflow_endurance_third_party_invite_partner.rb:44:in `get_invite_partner_email_by_invitee_email""
+/java_farm_client/target/GitLab/endurance/git/workflow/third_party/workflow_endurance_third_party_invite_partner.rb:69:in `get_partner_invitation_reponse_url""
+/java_farm_client/target/GitLab/endurance/git/workflow/third_party/workflow_endurance_third_party_common.rb:84:in `accept_partner_invitation""
+./endurance/functional_case/third_party/endurance_function_third_party_setting_partner_t19408_part2/action1_third_party_setting_partner_t19408_part2.rb:86:in `block in action_block_1""",692,suspect bug,Product Error,,
+32,98251,23338937,149554,LV-REG,chrome,"[2019-07-12 01:37:03] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/gerryracepass#/active/endurance/racePass/home?_nid=53557456
+Execute - wait EnduranceRacePass::RacePassSelectCheckbox to present - failed. the element with the property xpath and value //div[@class=""table-responsive""]//tbody//a[text()=""race pass purchased""]/../preceding-sibling::td/div[@class=""checkbox""] was not found in 10 seconds
+ -- Execute - wait EnduranceRacePass::RacePassSelectCheckbox to present - failed. the element with the property xpath and value //div[@class=""table-responsive""]//tbody//a[text()=""race pass purchased""]/../preceding-sibling::td/div[@class=""checkbox""] was not found in 10 seconds
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:260:in `block in wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `times""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/active_checkbox.rb:4:in `selected?""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/active_checkbox.rb:24:in `select""
+./endurance/functional_case/race_pass/endurance_function_aui_race_pass_after_purchase_t40109/action1_aui_race_pass_after_purchase.rb:67:in `block in action1""",129,element not found,Dynamic Issue,script issue,0
+33,98251,23338938,149554,LV-REG,chrome,"[2019-07-12 01:37:14] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/gerryracepass#/active/endurance/racePass/home?_nid=53557456
+Execute - wait EnduranceRacePass::RacePassListName to present - failed. the element with the property xpath and value //div[@class=""table-responsive""]//tbody//a[text()=""race pass purchased""] was not found in 10 seconds
+ -- Execute - wait EnduranceRacePass::RacePassListName to present - failed. the element with the property xpath and value //div[@class=""table-responsive""]//tbody//a[text()=""race pass purchased""] was not found in 10 seconds
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:260:in `block in wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `times""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/library/override/element_base.rb:56:in `click""
+./endurance/functional_case/race_pass/endurance_function_aui_race_pass_after_purchase_t40109/action1_aui_race_pass_after_purchase.rb:83:in `block in action1""",129,element not found,Dynamic Issue,script issue,0
+34,98251,23338940,149554,LV-REG,chrome,"[2019-07-12 01:37:14] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/gerryracepass#/active/endurance/racePass/home?_nid=53557456
+Updated new event to race pass which have been purchased failed
+ -- Updated new event to race pass which have been purchased failed
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+./endurance/functional_case/race_pass/endurance_function_aui_race_pass_after_purchase_t40109/action1_aui_race_pass_after_purchase.rb:163:in `block in action1""",129,suspect bug,Product Error,script issue,0
+35,98251,23339349,149323,LV-REG,chrome," -- undefined method `include?' for nil:NilClass
+97----->        Common.logger_error  prepay question mark text is not correct 
+98----->      end
+99----->      unless prepay_question_mark_described.include?  popover 
+100----->        Common.logger_error  prepay question mark text is not correct 
+101----->      end
+./endurance/functional_case/cui_single_page/endurance_function_cui_single_page_prepay_team_t40709_part1/action1_cui_single_page_prepay_t40709_part1.rb:99:in `block in action1'",65,code error,Dynamic Issue,dynamic issue,1
+36,98251,23339234,148790,LV-REG,chrome,"[2019-07-12 01:36:52] -- https://endurancecui-vip.reg.aw.dev.activenetwork.com/new/events/55100552/forms?_p=45607422897085637&locale=en_US
+Assert  - EnduranceCUIMultiCompleteForm::RegInfoQuestionValidationText should include text - failed. it don""t conatin [This participant has already registered for the event]
+ -- Assert  - EnduranceCUIMultiCompleteForm::RegInfoQuestionValidationText should include text - failed. it don""t conatin [This participant has already registered for the event]
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:172:in `text_include?""
+./endurance/functional_case/cui_single_page/endurance_function_cui_single_page_prevent_dup_t34286/action1_cui_single_page_prevent_dup_t34286.rb:43:in `block in action1""",930,suspect bug,Product Error,product error,1
+37,98251,23339235,148790,LV-REG,chrome,"[2019-07-12 01:38:48] -- https://endurancecui-vip.reg.aw.dev.activenetwork.com/new/events/55100552/forms?_p=0516902704553468&locale=en_US
+Assert  - EnduranceCUIMultiCompleteForm::RegInfoQuestionValidationText should include text - failed. it don""t conatin [This participant has already registered for the event]
+ -- Assert  - EnduranceCUIMultiCompleteForm::RegInfoQuestionValidationText should include text - failed. it don""t conatin [This participant has already registered for the event]
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:172:in `text_include?""
+./endurance/functional_case/cui_single_page/endurance_function_cui_single_page_prevent_dup_t34286/action1_cui_single_page_prevent_dup_t34286.rb:79:in `block in action1""",930,suspect bug,Product Error,product error,1
+38,98251,23339236,148790,LV-REG,chrome,"[2019-07-12 01:40:14] -- https://endurancecui-vip.reg.aw.dev.activenetwork.com/new/events/55100552/forms?_p=998763520163767&locale=en_US
+Assert  - EnduranceCUIMultiCompleteForm::RegInfoQuestionValidationText should include text - failed. it don""t conatin [This participant has already registered for the event]
+ -- Assert  - EnduranceCUIMultiCompleteForm::RegInfoQuestionValidationText should include text - failed. it don""t conatin [This participant has already registered for the event]
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:172:in `text_include?""
+./endurance/functional_case/cui_single_page/endurance_function_cui_single_page_prevent_dup_t34286/action1_cui_single_page_prevent_dup_t34286.rb:107:in `block in action1""",930,suspect bug,Product Error,product error,1
+39,98251,23339237,148790,LV-REG,chrome,"[2019-07-12 01:41:41] -- https://endurancecui-vip.reg.aw.dev.activenetwork.com/new/events/55100552/forms?_p=020002183947237295&locale=en_US
+Assert  - EnduranceCUIMultiCompleteForm::RegInfoQuestionValidationText should include text - failed. it don""t conatin [This participant has already registered for the event]
+ -- Assert  - EnduranceCUIMultiCompleteForm::RegInfoQuestionValidationText should include text - failed. it don""t conatin [This participant has already registered for the event]
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:172:in `text_include?""
+./endurance/functional_case/cui_single_page/endurance_function_cui_single_page_prevent_dup_t34286/action1_cui_single_page_prevent_dup_t34286.rb:137:in `block in action1""",930,suspect bug,Product Error,product error,1
+40,98251,23338110,148966,LV-REG,chrome," -- undefined method `get_elements' for nil:NilClass
+62----->        Common.logger_info( Timeout to get the response for getPaginatedCustomRegistrationReport:#{e} )
+63----->      end
+64----->      start = response.get_elements( //ns2:startIndex )[0]
+65----->      end_index = response.get_elements( //ns2:endIndex )[0]
+66----->      registration_id = response.get_elements( //ns2:registrationId )[0]
+./endurance/functional_case/api/endurance_function_external_api/action1_external_api.rb:64:in `block in action_block_1'",16,code error,Dynamic Issue,,
+41,98251,23340676,148927,LV-REG,chrome,"[2019-07-12 01:46:38] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/agency_mecaui_settings_mectab_2016011501#/active/endurance/registration/mobileExpressCheckout/details?eventId=46133651&mecRegId=2455452&_nid=54622911
+Execute - wait EnduranceAuiMobileExpressView::MECRegContainerHeaderByTextLabel to present - failed. the element with the property xpath and value //div[@id=""MECRegContainer""]//div[@class=""PersonHeader""]//div[contains(.,""Registration canceled"")][1] was not found in 10 seconds
+ -- Execute - wait EnduranceAuiMobileExpressView::MECRegContainerHeaderByTextLabel to present - failed. the element with the property xpath and value //div[@id=""MECRegContainer""]//div[@class=""PersonHeader""]//div[contains(.,""Registration canceled"")][1] was not found in 10 seconds
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:260:in `block in wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `times""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/library/override/element_base.rb:103:in `should_exist""
+./endurance/functional_case/mec/endurance_function_mec_aui_settings_registration_view_t14823/action1_mec_aui_settings_registration_view.rb:83:in `block in action_block_1""",875,element not found,Dynamic Issue,dynamic issue,1
+42,98251,23340677,148927,LV-REG,chrome,"[2019-07-12 01:48:12] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/agency_mecaui_settings_mectab_2016011501#/active/endurance/registration/mobileExpressCheckout/details?eventId=46133651&mecRegId=2455452&_nid=54756935
+Execute - wait EnduranceAuiMobileExpressView::MECRegContainerHeaderByTextLabel to present - failed. the element with the property xpath and value //div[@id=""MECRegContainer""]//div[@class=""PersonHeader""]//div[contains(.,""Registration canceled"")][1] was not found in 10 seconds
+ -- Execute - wait EnduranceAuiMobileExpressView::MECRegContainerHeaderByTextLabel to present - failed. the element with the property xpath and value //div[@id=""MECRegContainer""]//div[@class=""PersonHeader""]//div[contains(.,""Registration canceled"")][1] was not found in 10 seconds
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:260:in `block in wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `times""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:256:in `wait_element_present""
+/java_farm_client/target/GitLab/endurance/git/library/override/element_base.rb:103:in `should_exist""
+./endurance/functional_case/mec/endurance_function_mec_aui_settings_registration_view_t14823/action1_mec_aui_settings_registration_view.rb:185:in `block in action_block_1""",875,element not found,Dynamic Issue,dynamic issue,1
+43,98251,23340678,148927,LV-REG,chrome,"[2019-07-12 01:49:17] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/agency_mecaui_settings_mectab_2016011501#/active/endurance/registration/mobileExpressCheckout/details?eventId=46133651&mecRegId=2455452&_nid=54912345
+Assert  - check EnduranceAuiMobileExpressView::ActionsButton should NOT exist - failed. can find element by xpath and //button[contains(@class,""actionMenu"")]/span in the page, while it is not expected to show
+ -- Assert  - check EnduranceAuiMobileExpressView::ActionsButton should NOT exist - failed. can find element by xpath and //button[contains(@class,""actionMenu"")]/span in the page, while it is not expected to show
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:73:in `should_not_exist""
+./endurance/functional_case/mec/endurance_function_mec_aui_settings_registration_view_t14823/action1_mec_aui_settings_registration_view.rb:267:in `block in action_block_1""",875,suspect bug,Product Error,dynamic issue,0
+44,98251,23338491,149060,LV-REG,chrome,"[2019-07-12 01:36:13] -- https://endurancecui-vip.reg.aw.dev.activenetwork.com/new/events/55047852/select-race?refresh=true&locale=en_US&_p=9996412809229249
+EnduranceCUILogin::NewUserEmailTextInput.input - The element with the property name and value email does not exist.
+ -- EnduranceCUILogin::NewUserEmailTextInput.input - The element with the property name and value email does not exist.
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/library/override/element_base.rb:182:in `input""
+/java_farm_client/target/GitLab/endurance/git/library/endurance/cui/endurance_cui_login.rb:93:in `input""
+/java_farm_client/target/GitLab/endurance/git/workflow/cui/workflow_endurance_cui_registration_flow.rb:922:in `input_new_user_and_continue""
+/java_farm_client/target/GitLab/endurance/git/workflow/cui/workflow_endurance_cui_registration_flow.rb:930:in `login_with_new_user_v1""
+/java_farm_client/target/GitLab/endurance/git/workflow/cui/workflow_endurance_cui_registration_flow.rb:947:in `login_with_new_user""
+/java_farm_client/target/GitLab/endurance/git/workflow/cui/workflow_endurance_cui_registration_flow.rb:1013:in `login_with_user_email""
+/java_farm_client/target/GitLab/endurance/git/workflow/cui/workflow_endurance_cui_common.rb:116:in `create_cui_registration_user_with_self_team_v2""
+./endurance/functional_case/my_event/endurance_function_my_event_prepaid_public_link_t29213/action1_my_event_prepaid_public_link_t29213.rb:15:in `block in action_block_1""",828,element not found,Dynamic Issue,data issue,0
+45,98251,23340362,148985,LV-REG,chrome,"[2019-07-12 02:04:28] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/new_agency_20190422_1#/active/endurance/order/processPages/summary?_nid=5424278
+Assert  - EnduranceAuiModifyThsirtComplete::OrderHistoryAmountByNameText should include text - failed. it don""t conatin [1.00]
+ -- Assert  - EnduranceAuiModifyThsirtComplete::OrderHistoryAmountByNameText should include text - failed. it don""t conatin [1.00]
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:172:in `text_include?""
+./endurance/functional_case/aui_post_registration/endurance_function_post_registration_modify_tshirt_3/action1_aui_post_registration_modify_tshirt3.rb:164:in `block in action_block_1""",1744,suspect bug,Product Error,environment issue,0
+46,98251,23339515,148544,LV-REG,chrome,"[2019-07-12 01:49:00] -- https://enduranceui-vip.reg.aw.dev.activenetwork.com/third_party_agency_t19727_20190712013536#/active/endurance/thirdPartyOrg/managePartners
+Assert  - EnduranceSettingsManagePartners::PartnerStatusByNameText should include text - failed. it don""t conatin [Inactive]
+ -- Assert  - EnduranceSettingsManagePartners::PartnerStatusByNameText should include text - failed. it don""t conatin [Inactive]
+26----->        $logger.error message
+27----->        $errormessage=$errormessage &lt;&lt;timestamp&lt;&lt;  -- #{current_url}#{message}\n 
+28----->        raise message
+29----->        false
+30----->      end
+/java_farm_client/target/GitLab/endurance/git/core_framework/utilities/common.rb:28:in `logger_error""
+/java_farm_client/target/GitLab/endurance/git/core_framework/elements/element_base.rb:172:in `text_include?""
+./endurance/functional_case/third_party/endurance_function_third_party_enable_disable_third_party_addon_t19727/action1_third_party_enable_disable_third_party_addon_t19727.rb:210:in `block in action_block_1""",813,suspect bug,Product Error,,
