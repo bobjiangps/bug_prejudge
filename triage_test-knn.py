@@ -4,6 +4,7 @@ from utils.simple_prejudge_helper import SimplePrejudgeHelper
 import pandas as pd
 import os
 import math
+import datetime
 
 
 def generate_triage_history_data(db_conn, project_name, file_path):
@@ -35,13 +36,13 @@ def get_avg_duration_of_script(db_conn, script_id):
     avg_duration = db_conn.get_first_result_from_database(avg_duration_sql)["avg_duration"]
     return avg_duration
 
-
+start_time = datetime.datetime.now()
 project_name = "Endurance"
 triage_type = "Product Error"
 triage_file = os.path.join(os.getcwd(), "data", "temp_init_triage_%s.csv" % project_name)
 regression_db = MysqlConnection().connect("local_regression")
-# generate_file = True
-generate_file = False
+generate_file = True
+# generate_file = False
 if generate_file:
     generate_triage_history_data(regression_db, project_name, triage_file)
 
@@ -75,17 +76,17 @@ triage_history.drop(columns=to_drop, inplace=True)
 
 triaged_labels = triage_history["triage_type"]
 # triage_history.drop(columns=["triage_type"], inplace=True)
-print(type(triaged_labels))
-print(triaged_labels[0])
-print(type(triage_history))
-print(triage_history.loc[0])
-temp = triage_history.loc[0]
-print(temp["duration"])
-print(temp.loc["duration"])
-print(len(temp))
-print("0-0-0-0-0-0-")
-for i in temp:
-    print(i)
+# print(type(triaged_labels))
+# print(triaged_labels[0])
+# print(type(triage_history))
+# print(triage_history.loc[0])
+# temp = triage_history.loc[0]
+# print(temp["duration"])
+# print(temp.loc["duration"])
+# print(len(temp))
+# print("0-0-0-0-0-0-")
+# for i in temp:
+#     print(i)
 
 
 round_id_for_test = 98251
@@ -131,7 +132,8 @@ print("----------")
 test_error = test_round_errors
 distance = []
 knn_columns = test_round_errors.columns.values
-print(triaged_labels)
+# print(triaged_labels)
+
 # for index, row in triage_history.iterrows():
 #     sum = 0
 #     for column in knn_columns:
@@ -155,11 +157,13 @@ for seq in range(len(test_error)):
         init_triage_history.loc[index, "distance"] = math.sqrt(sum)
     init_triage_history = init_triage_history.sort_values(by=["distance"])
     predict_top = init_triage_history.iloc[:3]["triage_type"]
-    print(seq)
-    print(predict_top)
-    print(pd.value_counts(predict_top).index[0])
+    # print(seq)
+    # print(predict_top)
+    # print(pd.value_counts(predict_top).index[0])
     init_test_round_errors.loc[seq, "predict_triage"] = pd.value_counts(predict_top).index[0]
 init_test_round_errors.to_csv(os.path.join(os.getcwd(), "data", "temp_init_round_error_%s.csv" % project_name))
+end_time = datetime.datetime.now()
+print("duration: ", end_time - start_time)
 
 # init_triage_history = init_triage_history.sort_values(by=["distance"])
 # init_triage_history.to_csv(os.path.join(os.getcwd(), "data", "temp_triage_%s_new_new_init.csv" % project_name))
