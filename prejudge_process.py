@@ -2,6 +2,7 @@ from utils.mysql_helper import MysqlConnection
 from utils.file_helper import FileHelper
 from utils.error_analyzer import ErrorAnalyzer
 from utils.simple_prejudge_helper import SimplePrejudgeHelper
+from utils.ml_prejudge_helper import MLPrejudgeHelper
 from configuration.config import Config
 from datetime import datetime
 import pandas as pd
@@ -14,10 +15,10 @@ class PrejudgeProcess:
         self.test_round_id = round_id
         self.automation_script_result_id = script_id
         self.automation_case_result_id = case_id
-        self.regression_history_file = None
-        self.test_round_errors_file = None
-        self.test_round_all_results_file = None
-        self.triage_history_file = None
+        # self.regression_history_file = None
+        # self.test_round_errors_file = None
+        # self.test_round_all_results_file = None
+        # self.triage_history_file = None
 
     def run(self):
         start_time = datetime.now()
@@ -34,7 +35,8 @@ class PrejudgeProcess:
         regression_history_file = os.path.join(os.getcwd(), "data", "regression_history_%s.csv" % project_name)
         test_round_errors_file = os.path.join(os.getcwd(), "data", "test_round_errors.csv")
         test_round_all_results_file = os.path.join(os.getcwd(), "data", "test_round_results.csv")
-        triage_history_file = os.path.join(os.getcwd(), "data", "triage_history_%s.csv" % project_name)
+        # triage_history_file = os.path.join(os.getcwd(), "data", "triage_history_%s.csv" % project_name)
+        triage_history_file = os.path.join(os.getcwd(), "data", "triage_history.csv")
 
         # generate regression history
         self.generate_regression_history_data(regression_db, current_test_round["project_id"], regression_history_file)
@@ -83,16 +85,28 @@ class PrejudgeProcess:
                     response["message"] = "The element '%s' has most failures: %d times" % (most_failure_element[0], most_failure_element[1])
 
             # check whether has triage history or not
-            if os.path.exists(triage_history_file):
-                has_triage = True
+            # if os.path.exists(triage_history_file):
+            #     has_triage = True
+            # else:
+            #     prejudge_db = MysqlConnection().connect("local_prejudge")
+            #     has_triage = self.generate_triage_history_data(prejudge_db, project_name, triage_history_file)
+
+            if not os.path.exists(triage_history_file):
+                print("not exist triage history file")
+                os.system("python generate_triage_history.py")
             else:
-                prejudge_db = MysqlConnection().connect("local_prejudge")
-                has_triage = self.generate_triage_history_data(prejudge_db, project_name, triage_history_file)
+                print("exist triage history file")
+            init_triage_history = pd.read_csv(triage_history_file)
+            init_triage_history["script_duration"].replace("None", 0, inplace=True)
+            init_triage_history["script_duration"] = pd.to_numeric(init_triage_history["script_duration"])
+            init_triage_history = init_triage_history[init_triage_history["project"] == project_name]
+            has_triage = True if len(init_triage_history) > 0 else False
 
             # different logic with has_triage flag
             if has_triage:
-                print("go to detail prejudge")
-                response["scripts"] = SimplePrejudgeHelper.prejudge_all(round_all_results)  # debug, remove
+                print("go to ml prejudge")
+                response["scripts"] = MLPrejudgeHelper.neighbor_classifier(init_triage_history)
+                response["type"] = "ml"
                 # todo
             else:
                 print("go to simple prejudge")
@@ -101,9 +115,11 @@ class PrejudgeProcess:
                 #     case_prejudge_result = SimplePrejudgeHelper.prejudge_case(case)
                 #     response["cases"][case.id[index]] = {"script_result_id": case.automation_script_result_id[index], "result": case_prejudge_result}
                 response["scripts"] = SimplePrejudgeHelper.prejudge_all(round_all_results)
+                response["type"] = "simple"
         else:
             print("go to simple prejudge")
             response["scripts"] = SimplePrejudgeHelper.prejudge_all(round_all_results)
+            response["type"] = "simple"
 
         # response["scripts"] = SimplePrejudgeHelper.summarize_script_by_prejudged_case(response["cases"])
         response["time"] = str(datetime.now())
@@ -155,16 +171,16 @@ class PrejudgeProcess:
             print("there are %d rows in database when query the round all results\n" % len(test_round_results))
             return True
 
-    def generate_triage_history_data(self, db_conn, project_name, file_path):
-        # triage_history_sql = "SELECT * FROM `automation_case_results` where triage_result is not NULL and error_type_id in (select id from error_types where name in ('Product Error', 'Product Change')) and automation_script_result_id in (select id from automation_script_results where triage_result is not NULL and automation_script_id in (select id from automation_scripts where project_id=2))"
-        # triage_history_sql = "SELECT * FROM `automation_case_results` where error_type_id in (select id from error_types) and automation_script_result_id in (select id from automation_script_results where automation_script_id in (select id from automation_scripts where project_id=2))"
-        triage_history_sql = "select * from prejudge_seeds where project_name='%s'" % project_name
-        print("generate triage history data")
-        triage_history = db_conn.get_all_results_from_database(triage_history_sql)
-        if len(triage_history) == 0:
-            print("no triage history in project: %s" % project_name)
-            return False
-        else:
-            FileHelper.save_db_query_result_to_csv(triage_history, file_path)
-            print("there are %d rows in database when query the triage history of project: %s\n" % (len(triage_history), project_name))
-            return True
+    # def generate_triage_history_data(self, db_conn, project_name, file_path):
+    #     # triage_history_sql = "SELECT * FROM `automation_case_results` where triage_result is not NULL and error_type_id in (select id from error_types where name in ('Product Error', 'Product Change')) and automation_script_result_id in (select id from automation_script_results where triage_result is not NULL and automation_script_id in (select id from automation_scripts where project_id=2))"
+    #     # triage_history_sql = "SELECT * FROM `automation_case_results` where error_type_id in (select id from error_types) and automation_script_result_id in (select id from automation_script_results where automation_script_id in (select id from automation_scripts where project_id=2))"
+    #     triage_history_sql = "select * from prejudge_seeds where project_name='%s'" % project_name
+    #     print("generate triage history data")
+    #     triage_history = db_conn.get_all_results_from_database(triage_history_sql)
+    #     if len(triage_history) == 0:
+    #         print("no triage history in project: %s" % project_name)
+    #         return False
+    #     else:
+    #         FileHelper.save_db_query_result_to_csv(triage_history, file_path)
+    #         print("there are %d rows in database when query the triage history of project: %s\n" % (len(triage_history), project_name))
+    #         return True
