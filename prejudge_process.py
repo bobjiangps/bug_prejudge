@@ -97,15 +97,17 @@ class PrejudgeProcess:
             else:
                 print("exist triage history file")
             init_triage_history = pd.read_csv(triage_history_file)
-            init_triage_history["script_duration"].replace("None", 0, inplace=True)
-            init_triage_history["script_duration"] = pd.to_numeric(init_triage_history["script_duration"])
             init_triage_history = init_triage_history[init_triage_history["project"] == project_name]
-            has_triage = True if len(init_triage_history) > 0 else False
+            has_triage = True if len(init_triage_history) > Config.load_env("triage_trigger_ml") else False
 
             # different logic with has_triage flag
             if has_triage:
                 print("go to ml prejudge")
-                response["scripts"] = MLPrejudgeHelper.neighbor_classifier(init_triage_history)
+                init_triage_history["script_duration"].replace("None", 0, inplace=True)
+                init_triage_history["script_duration"] = pd.to_numeric(init_triage_history["script_duration"])
+                init_test_round_results = self.generate_test_round_results_data_ml(regression_db)
+                # response["scripts"] = MLPrejudgeHelper.neighbor_classifier(init_triage_history, init_test_round_results)
+                response["scripts"] = MLPrejudgeHelper.prejudge_all(init_triage_history, init_test_round_results)
                 response["type"] = "ml"
                 # todo
             else:
@@ -171,16 +173,32 @@ class PrejudgeProcess:
             print("there are %d rows in database when query the round all results\n" % len(test_round_results))
             return True
 
-    # def generate_triage_history_data(self, db_conn, project_name, file_path):
-    #     # triage_history_sql = "SELECT * FROM `automation_case_results` where triage_result is not NULL and error_type_id in (select id from error_types where name in ('Product Error', 'Product Change')) and automation_script_result_id in (select id from automation_script_results where triage_result is not NULL and automation_script_id in (select id from automation_scripts where project_id=2))"
-    #     # triage_history_sql = "SELECT * FROM `automation_case_results` where error_type_id in (select id from error_types) and automation_script_result_id in (select id from automation_script_results where automation_script_id in (select id from automation_scripts where project_id=2))"
-    #     triage_history_sql = "select * from prejudge_seeds where project_name='%s'" % project_name
-    #     print("generate triage history data")
-    #     triage_history = db_conn.get_all_results_from_database(triage_history_sql)
-    #     if len(triage_history) == 0:
-    #         print("no triage history in project: %s" % project_name)
-    #         return False
-    #     else:
-    #         FileHelper.save_db_query_result_to_csv(triage_history, file_path)
-    #         print("there are %d rows in database when query the triage history of project: %s\n" % (len(triage_history), project_name))
-    #         return True
+    def generate_test_round_results_data_ml(self, db_conn):
+        if self.automation_case_result_id:
+            suffix = "where acr.id=%d;" % int(self.automation_case_result_id)
+        elif self.automation_script_result_id:
+            suffix = "where asr.id=%d;" % int(self.automation_script_result_id)
+        else:
+            suffix = "where tr.id=%d;" % int(self.test_round_id)
+        print("generate test round all results data for ml")
+        test_round_results_sql = """SELECT tr.id as round_id, acr.result, acr.automation_case_id, asr.automation_script_id, acr.id as automation_case_result_id, asr.id as automation_script_result_id,
+                                    te.name as env, b.name as browser, acr.error_message, (UNIX_TIMESTAMP(asr.end_time)-UNIX_TIMESTAMP(asr.start_time)) as script_duration FROM `automation_case_results` as acr
+                                    left join `automation_script_results` as asr on acr.automation_script_result_id=asr.id
+                                    left join `test_rounds` as tr on asr.test_round_id=tr.id
+                                    left join `test_environments` as te on tr.test_environment_id=te.id
+                                    left join `browsers` as b on tr.browser_id=b.id
+                                    left join `projects` as p on p.id=tr.project_id
+                                    left join `error_types` as et on et.id=acr.error_type_id %s;
+                                    """ % suffix
+        con = db_conn.get_conn()
+        test_round_results = pd.read_sql(test_round_results_sql, con)
+        con.close()
+        return test_round_results
+
+
+# p = PrejudgeProcess(round_id=98251)
+# p = PrejudgeProcess(round_id=98251, script_id=2609879)
+p = PrejudgeProcess(round_id=98251, script_id=2609879, case_id=8649410)
+r = p.run()
+x=input("input sth")
+print(r)

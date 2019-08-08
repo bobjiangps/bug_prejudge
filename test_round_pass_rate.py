@@ -45,8 +45,8 @@ def generate_test_round_errors_data(dbconn, round_id, filepath):
 
 if __name__ == "__main__":
     # test_round_id = input("Please input test round id you want to check:\n")  # 97585 for test
-    test_round_id = 97585
-    response = {"id": test_round_id, "message": None, "cases": None}
+    test_round_id = 97585  # to be removed
+    response = {"id": test_round_id, "message": None, "scripts": None, "cases": None}
     data_folder = os.path.join(os.getcwd(), "data")
     if not os.path.exists(data_folder):
         os.mkdir(data_folder)
@@ -119,7 +119,8 @@ if __name__ == "__main__":
                         if str(item) != "nan":
                             print(item)  # to be removed
                             round_element_errors_record.append(item)
-                response["message"] = "The most failures related to element: %s" % Counter(round_element_errors_record).most_common(1)[0][0]
-                print("Attention!!! %s" % response["message"])
+                most_failure_element = Counter(round_element_errors_record).most_common(1)
+                response["message"] = "The element '%s' has most failures: %d times" % (most_failure_element[0][0], most_failure_element[0][1])
+                print(response["message"])
 
 

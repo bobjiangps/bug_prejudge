@@ -38,7 +38,7 @@ def get_avg_duration_of_script(db_conn, script_id):
 
 start_time = datetime.datetime.now()
 project_name = "Endurance"
-triage_type = "Product Error"
+# triage_type = "Product Error"
 triage_file = os.path.join(os.getcwd(), "data", "temp_init_triage_%s.csv" % project_name)
 regression_db = MysqlConnection().connect("local_regression")
 generate_file = True

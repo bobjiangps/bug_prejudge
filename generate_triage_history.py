@@ -1,5 +1,6 @@
 from utils.mysql_helper import MysqlConnection
-from utils.file_helper import FileHelper
+from utils.simple_prejudge_helper import SimplePrejudgeHelper
+import pandas as pd
 import os
 
 
@@ -16,12 +17,15 @@ def generate_triage_history_data(db_conn, file_path):
         ORDER BY `round_id`  ASC
     """
     print("generate triage history data of all projects")
-    triage_history_data = db_conn.get_all_results_from_database(triage_history_sql)
+    con = db_conn.get_conn()
+    triage_history_data = pd.read_sql(triage_history_sql, con)
+    con.close()
     if len(triage_history_data) == 0:
         print("no triage history in all projects")
         return False
     else:
-        FileHelper.save_db_query_result_to_csv(triage_history_data, file_path)
+        triage_history_data["error_type"] = triage_history_data["error_message"].apply(lambda x: SimplePrejudgeHelper.prejudge_error_message(x))
+        triage_history_data.to_csv(file_path)
         print("there are %d rows in database when query the triage history of all projects\n" % len(triage_history_data))
         return True
 
