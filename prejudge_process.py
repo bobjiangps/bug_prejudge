@@ -15,10 +15,6 @@ class PrejudgeProcess:
         self.test_round_id = round_id
         self.automation_script_result_id = script_id
         self.automation_case_result_id = case_id
-        # self.regression_history_file = None
-        # self.test_round_errors_file = None
-        # self.test_round_all_results_file = None
-        # self.triage_history_file = None
 
     def run(self):
         start_time = datetime.now()
@@ -33,9 +29,6 @@ class PrejudgeProcess:
         print("specified test round information:\n", current_test_round)
         project_name = regression_db.get_first_result_from_database("select name from projects where id=%d" % int(current_test_round["project_id"]))["name"]
         regression_history_file = os.path.join(os.getcwd(), "data", "regression_history_%s.csv" % project_name)
-        test_round_errors_file = os.path.join(os.getcwd(), "data", "test_round_errors.csv")
-        test_round_all_results_file = os.path.join(os.getcwd(), "data", "test_round_results.csv")
-        # triage_history_file = os.path.join(os.getcwd(), "data", "triage_history_%s.csv" % project_name)
         triage_history_file = os.path.join(os.getcwd(), "data", "triage_history.csv")
 
         # generate regression history
@@ -50,7 +43,7 @@ class PrejudgeProcess:
             # check pass rate line for new test suite
             if current_test_round["pass_rate"] < Config.load_env("pass_rate_line"):
                 print("NOT normal Test Round !!! need to check error messages first")
-                normal_round = False
+                normal_round = False  # normal_round to be used in future
             else:
                 print("Normal Test Round..")
                 normal_round = True
@@ -67,36 +60,26 @@ class PrejudgeProcess:
                 normal_round = True
 
         # generate error data
-        generate_error_result = self.generate_test_round_errors_data(regression_db, test_round_errors_file)
-        round_errors = pd.read_csv(test_round_errors_file)
-        generate_all_result = self.generate_test_round_results_data(regression_db, test_round_all_results_file)
-        round_all_results = pd.read_csv(test_round_all_results_file)
-
-        if generate_error_result:
-            if normal_round:
-                most_failure_element = ErrorAnalyzer.check_element_caused_most_failures(round_errors)
-                response["message"] = "The element '%s' has most failures: %d times" % (most_failure_element[0], most_failure_element[1])
-            else:
-                network_error_percentage = ErrorAnalyzer.check_network_issue_percentage(round_errors)
-                if network_error_percentage > 0.5:
-                    response["message"] = "More than 50%% of failures are caused by network issue, please check environment then rerun test round %d" % test_round_id
-                else:
-                    most_failure_element = ErrorAnalyzer.check_element_caused_most_failures(round_errors)
-                    response["message"] = "The element '%s' has most failures: %d times" % (most_failure_element[0], most_failure_element[1])
-
-            # check whether has triage history or not
-            # if os.path.exists(triage_history_file):
-            #     has_triage = True
+        round_errors = self.generate_test_round_errors_data(regression_db)
+        round_all_results = self.generate_test_round_results_data(regression_db)
+        if len(round_errors) > 0:
+            # if normal_round:
+            #     most_failure_element = ErrorAnalyzer.check_element_caused_most_failures(round_errors)
+            #     response["message"] = "The element '%s' has most failures: %d times" % (most_failure_element[0], most_failure_element[1])
             # else:
-            #     prejudge_db = MysqlConnection().connect("local_prejudge")
-            #     has_triage = self.generate_triage_history_data(prejudge_db, project_name, triage_history_file)
+            #     network_error_percentage = ErrorAnalyzer.check_network_issue_percentage(round_errors)
+            #     if network_error_percentage > 0.5:
+            #         response["message"] = "More than 50%% of failures are caused by network issue, please check environment then rerun test round %d" % test_round_id
+            #     else:
+            #         most_failure_element = ErrorAnalyzer.check_element_caused_most_failures(round_errors)
+            #         response["message"] = "The element '%s' has most failures: %d times" % (most_failure_element[0], most_failure_element[1])
 
             if not os.path.exists(triage_history_file):
                 print("not exist triage history file")
                 os.system("python generate_triage_history.py")
             else:
                 print("exist triage history file")
-            init_triage_history = pd.read_csv(triage_history_file)
+            init_triage_history = pd.read_csv(triage_history_file, index_col=0)
             init_triage_history = init_triage_history[init_triage_history["project"] == project_name]
             has_triage = True if len(init_triage_history) > Config.load_env("triage_trigger_ml") else False
 
@@ -109,13 +92,8 @@ class PrejudgeProcess:
                 # response["scripts"] = MLPrejudgeHelper.neighbor_classifier(init_triage_history, init_test_round_results)
                 response["scripts"] = MLPrejudgeHelper.prejudge_all(init_triage_history, init_test_round_results)
                 response["type"] = "ml"
-                # todo
             else:
                 print("go to simple prejudge")
-                # for index in range(len(round_errors)):
-                #     case = round_errors.iloc[[index]]
-                #     case_prejudge_result = SimplePrejudgeHelper.prejudge_case(case)
-                #     response["cases"][case.id[index]] = {"script_result_id": case.automation_script_result_id[index], "result": case_prejudge_result}
                 response["scripts"] = SimplePrejudgeHelper.prejudge_all(round_all_results)
                 response["type"] = "simple"
         else:
@@ -123,13 +101,14 @@ class PrejudgeProcess:
             response["scripts"] = SimplePrejudgeHelper.prejudge_all(round_all_results)
             response["type"] = "simple"
 
-        # response["scripts"] = SimplePrejudgeHelper.summarize_script_by_prejudged_case(response["cases"])
+        response["message"] = self.summary_prejudged_errors(response["scripts"])
         response["time"] = str(datetime.now())
         end_time = datetime.now()
         print(f"duration: {end_time - start_time}")
         return response
 
-    def generate_regression_history_data(self, db_conn, project_id, file_path):
+    @staticmethod
+    def generate_regression_history_data(db_conn, project_id, file_path):
         generate_flag = Config.load_env("generate_regression_history")
         if not os.path.exists(file_path):
             generate_flag = True
@@ -143,20 +122,20 @@ class PrejudgeProcess:
         else:
             print("NOT generate history regression data\n")
 
-    def generate_test_round_errors_data(self, db_conn, file_path):
+    def generate_test_round_errors_data(self, db_conn):
         test_round_errors_sql = "SELECT * FROM automation_case_results where automation_script_result_id in (select id from automation_script_results where test_round_id=%d) and result = 'failed';" % int(self.test_round_id)
         print("generate test round errors data")
-        test_round_errors = db_conn.get_all_results_from_database(test_round_errors_sql)
+        con = db_conn.get_conn()
+        test_round_errors = pd.read_sql(test_round_errors_sql, con)
+        con.close()
         if len(test_round_errors) == 0:
             print("no errors in this test round with id: %d" % int(self.test_round_id))
-            return False
+            return []
         else:
-            FileHelper.save_db_query_result_to_csv(test_round_errors, file_path)
             print("there are %d rows in database when query the round error\n" % len(test_round_errors))
-            return True
+            return test_round_errors
 
-    def generate_test_round_results_data(self, db_conn, file_path):
-        # test_round_results_sql = "SELECT * FROM automation_case_results where automation_script_result_id in (2609677, 2609831, 2609879, 2609971, 2610080, 2610095, 2610333, 2610366, 2610380, 2610415, 2609629, 2609636, 2609638, 2609644, 2609651, 2609663);"
+    def generate_test_round_results_data(self, db_conn):
         if self.automation_case_result_id:
             test_round_results_sql = "SELECT * FROM automation_case_results where id=%d;" % int(self.automation_case_result_id)
         elif self.automation_script_result_id:
@@ -164,14 +143,15 @@ class PrejudgeProcess:
         else:
             test_round_results_sql = "SELECT * FROM automation_case_results where automation_script_result_id in (select id from automation_script_results where test_round_id=%d);" % int(self.test_round_id)
         print("generate test round all results data")
-        test_round_results = db_conn.get_all_results_from_database(test_round_results_sql)
+        con = db_conn.get_conn()
+        test_round_results = pd.read_sql(test_round_results_sql, con)
+        con.close()
         if len(test_round_results) == 0:
             print("no result in this test round with id: %d" % int(self.test_round_id))
-            return False
+            return []
         else:
-            FileHelper.save_db_query_result_to_csv(test_round_results, file_path)
             print("there are %d rows in database when query the round all results\n" % len(test_round_results))
-            return True
+            return test_round_results
 
     def generate_test_round_results_data_ml(self, db_conn):
         if self.automation_case_result_id:
@@ -195,10 +175,15 @@ class PrejudgeProcess:
         con.close()
         return test_round_results
 
-
-# p = PrejudgeProcess(round_id=98251)
-# p = PrejudgeProcess(round_id=98251, script_id=2609879)
-p = PrejudgeProcess(round_id=98251, script_id=2609879, case_id=8649410)
-r = p.run()
-x=input("input sth")
-print(r)
+    @staticmethod
+    def summary_prejudged_errors(results):
+        summary = {}
+        for v in results.values():
+            if v["result"] not in ["not-run", "pass"]:
+                for c in v["cases"].values():
+                    if c not in ["not-run", "pass"]:
+                        if c not in summary.keys():
+                            summary[c] = 1
+                        else:
+                            summary[c] += 1
+        return summary

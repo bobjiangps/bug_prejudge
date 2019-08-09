@@ -24,31 +24,10 @@ class SimplePrejudgeHelper:
 
     @classmethod
     def prejudge_case(cls, case):
-        index = case.index.values[0]
-        if case.result[index] == "failed":
-            if case.error_message[index]:
-                message = case.error_message
-                if message.str.match("|".join(cls.log_error_re), flags=re.IGNORECASE)[index]:
-                    if message.str.match("|".join(cls.assert_fail_re), flags=re.IGNORECASE)[index]:
-                        prejudge_type = "suspect bug"
-                    elif message.str.match("|".join(cls.element_error_re), flags=re.IGNORECASE)[index]:
-                        prejudge_type = "element not found"
-                    elif message.str.match("|".join(cls.env_issue_re), flags=re.IGNORECASE)[index]:
-                        prejudge_type = "execution environment issue"
-                    elif message.str.match("|".join(cls.net_issue_re), flags=re.IGNORECASE)[index]:
-                        prejudge_type = "network issue"
-                    else:
-                        prejudge_type = "suspect bug"
-                elif message.str.match("|".join(cls.net_issue_re), flags=re.IGNORECASE)[index]:
-                    prejudge_type = "network issue"
-                elif message.str.match("|".join(cls.code_error_re), flags=re.IGNORECASE)[index]:
-                    prejudge_type = "code error"
-                else:
-                    prejudge_type = "other"
-            else:
-                prejudge_type = case.error_message[index]
+        if case.result == "failed":
+            prejudge_type = cls.prejudge_error_message(case.error_message)
         else:
-            prejudge_type = case.result[index]
+            prejudge_type = case.result
         return prejudge_type
 
     @classmethod
@@ -56,20 +35,20 @@ class SimplePrejudgeHelper:
         script_result = {}
         if len(cases) > 1:
             for index in range(len(cases)):
-                case = cases.iloc[[index]]
-                script_result_id = str(case.automation_script_result_id[index])
+                case = cases.iloc[index]
+                script_result_id = str(case.automation_script_result_id)
                 case_prejudge_result = cls.prejudge_case(case)
                 if script_result_id not in script_result.keys():
-                    script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.id[index]): case_prejudge_result}}
+                    script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.id): case_prejudge_result}}
                 else:
-                    script_result[script_result_id]["cases"][str(case.id[index])] = case_prejudge_result
+                    script_result[script_result_id]["cases"][str(case.id)] = case_prejudge_result
                     if cls.error_priority[case_prejudge_result] < cls.error_priority[script_result[script_result_id]["result"]]:
                         script_result[script_result_id]["result"] = case_prejudge_result
         else:
-            case = cases.iloc[[0]]
-            script_result_id = str(case.automation_script_result_id[0])
+            case = cases.iloc[0]
+            script_result_id = str(case.automation_script_result_id)
             case_prejudge_result = cls.prejudge_case(case)
-            script_result[script_result_id] = {"result": None, "cases": {str(case.id[0]): case_prejudge_result}}
+            script_result[script_result_id] = {"result": None, "cases": {str(case.id): case_prejudge_result}}
         return script_result
 
     @classmethod
