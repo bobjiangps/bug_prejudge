@@ -20,7 +20,7 @@ class MysqlHelper:
         return self.conn
 
     def get_cur(self):
-        self.conn = pymysql.connect(host=self.info["host"], port=self.info["port"], user=self.info["username"], passwd=str(self.info["password"]), db=self.info["dbname"], charset=self.info["charset"])
+        self.conn = self.get_conn()
         self.cur = self.conn.cursor()
         return self.cur
 
