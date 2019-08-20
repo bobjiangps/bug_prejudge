@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 
 def loadData(): #打开读入数据
@@ -13,9 +14,51 @@ def loadData(): #打开读入数据
     fr.close() #关闭文件
     return dataMat,labelMat
 
+# def loadData(): #打开读入数据
+#     dataMat = [] #样本数据列表
+#     labelMat = [] #标签列表
+#     for i in range(500):
+#         dataMat.append([1.0, random.uniform(-10, 10), random.uniform(-10, 10)]) #添加
+#         labelMat.append(random.randint(0, 1))
+#     return dataMat,labelMat
+
 
 def sigmoid(a):                              #sigmoid函数
     return 1.0 / (1 + np.exp(-a))
+
+
+# def gradRise(dataMat1,labelMat1): #梯度上升函数
+#     dataMat_np = np.mat(dataMat1) #转换为np矩阵
+#     labelMat_np = np.mat(labelMat1).transpose() #同上
+#     m,n = np.shape(dataMat_np) #返回行数列数
+#     alpha = 0.001 #学习步长
+#     Maxiteration = 10 #最大迭代次数
+#     w = np.ones((n,1)) #系数（及权重）
+#     #print(labelMat_np.shape)
+#     temp_error = None
+#     loop_count = 0
+#     while True:
+#         loop_count += 1
+#     # for k in range(Maxiteration): #梯度上升函数矢量化
+#         h = sigmoid(dataMat_np * w)
+#         error = labelMat_np - h #误差
+#         print("--=-=-error-=-=-=")
+#         print(np.sum(error))
+#         w = w + alpha * dataMat_np.transpose() * error
+#         if not temp_error:
+#             temp_error = np.sum(error)
+#         print("-----")
+#         print(temp_error)
+#         print(np.sum(error))
+#         if abs(temp_error) < abs(np.sum(error)):
+#             break
+#         else:
+#             temp_error = np.sum(error)
+#     print("-=-final-==-=")
+#     print(error)
+#     print(np.sum(temp_error))
+#     print(loop_count)
+#     return w.getA(), error #矩阵转数组
 
 
 def gradRise(dataMat1,labelMat1): #梯度上升函数
@@ -30,7 +73,7 @@ def gradRise(dataMat1,labelMat1): #梯度上升函数
         h = sigmoid(dataMat_np * w)
         error = labelMat_np - h #误差
         w = w + alpha * dataMat_np.transpose() * error
-    return w.getA() #矩阵转数组
+    return w.getA(), error #矩阵转数组
 
 
 def show(w): #绘图
@@ -65,6 +108,7 @@ def show(w): #绘图
 
 if __name__ == "__main__":
     dataMat,labelMat = loadData()
-    w = gradRise(dataMat,labelMat)
+    w,e = gradRise(dataMat,labelMat)
     print(w)
+    print(e)
     show(w)
