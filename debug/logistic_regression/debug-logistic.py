@@ -31,7 +31,7 @@ def sigmoid(a):                              #sigmoid函数
 #     dataMat_np = np.mat(dataMat1) #转换为np矩阵
 #     labelMat_np = np.mat(labelMat1).transpose() #同上
 #     m,n = np.shape(dataMat_np) #返回行数列数
-#     alpha = 0.001 #学习步长
+#     alpha = 0.1 #学习步长
 #     Maxiteration = 10 #最大迭代次数
 #     w = np.ones((n,1)) #系数（及权重）
 #     #print(labelMat_np.shape)
@@ -46,14 +46,14 @@ def sigmoid(a):                              #sigmoid函数
 #         print(np.sum(error))
 #         w = w + alpha * dataMat_np.transpose() * error
 #         if not temp_error:
-#             temp_error = np.sum(error)
+#             temp_error = np.sum(np.abs(error))
 #         print("-----")
 #         print(temp_error)
-#         print(np.sum(error))
-#         if abs(temp_error) < abs(np.sum(error)):
+#         print(np.sum(np.abs(error)))
+#         if temp_error < np.sum(np.abs(error)) and np.sum(np.abs(error)) < 0.1:
 #             break
 #         else:
-#             temp_error = np.sum(error)
+#             temp_error = np.sum(np.abs(error))
 #     print("-=-final-==-=")
 #     print(error)
 #     print(np.sum(temp_error))
