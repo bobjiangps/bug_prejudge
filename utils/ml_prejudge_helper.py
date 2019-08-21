@@ -68,7 +68,7 @@ class MLPrejudgeHelper:
     def neighbor_classifier(cls, init_triage_history, init_test_round_errors, neighbor=3):
         prejudge_result = {}
         triage_history = init_triage_history.copy()
-        # preprocess 20190816, to hide until 'triage history drop'
+        # # preprocess 20190816, to hide until 'triage history drop'
         # triage_history["avg_duration"] = triage_history["automation_script_id"].apply(lambda x: cls.get_avg_duration_of_script(cls.regression_db, x))
         # triage_history["avg_duration"] = pd.to_numeric(triage_history["avg_duration"])
         # triage_history["duration_offset"] = triage_history["script_duration"] - triage_history["avg_duration"]

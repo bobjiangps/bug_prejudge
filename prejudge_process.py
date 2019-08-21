@@ -85,12 +85,15 @@ class PrejudgeProcess:
 
             # different logic with has_triage flag
             if has_triage:
-                # preprocess 20190816
-                project_triage_history_file = os.path.join(os.getcwd(), "data", "triage_history_%s.csv" % project_name)
-                project_triage_history = pd.read_csv(project_triage_history_file, index_col=0)
                 print("go to ml prejudge")
-                init_test_round_results = self.generate_test_round_results_data_ml(regression_db)
-                response["scripts"] = MLPrejudgeHelper.prejudge_all(project_triage_history, init_test_round_results)
+                if Config.load_env("algorithm") == "knn":
+                    # preprocess 20190816
+                    project_triage_history_file = os.path.join(os.getcwd(), "data", "triage_history_%s.csv" % project_name)
+                    project_triage_history = pd.read_csv(project_triage_history_file, index_col=0)
+                    init_test_round_results = self.generate_test_round_results_data_ml(regression_db)
+                    response["scripts"] = MLPrejudgeHelper.prejudge_all(project_triage_history, init_test_round_results)
+                else:
+                    raise Exception("unknown algorithm")
                 response["type"] = "ml"
 
                 # print("go to ml prejudge")
