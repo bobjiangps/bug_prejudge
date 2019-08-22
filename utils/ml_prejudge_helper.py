@@ -1,5 +1,6 @@
 from utils.mysql_helper import MysqlConnection
 from utils.simple_prejudge_helper import SimplePrejudgeHelper
+from utils.gradient import sigmoid
 import pandas as pd
 import math
 
@@ -32,6 +33,11 @@ class MLPrejudgeHelper:
         "Not Ready": 10
     }
 
+    classify = {
+        "Product Error": 1,
+        "Not Product Error": 2
+    }
+
     @classmethod
     def prejudge_all(cls, init_triage_history, init_test_round_results, algorithm="knn"):
         script_result = {}
@@ -51,6 +57,9 @@ class MLPrejudgeHelper:
             if algorithm == "knn":
                 error_results = cls.neighbor_classifier(init_triage_history, errors)
                 cls.merge_result(script_result, error_results)
+            elif algorithm == "logistic":
+                error_results = cls.logistic_regression(init_triage_history, errors)
+                cls.merge_result(script_result, error_results)
         else:
             case = init_test_round_results.iloc[[0]]
             script_result_id = str(case.automation_script_result_id[0])
@@ -60,6 +69,10 @@ class MLPrejudgeHelper:
             else:
                 if algorithm == "knn":
                     prejudge_result = cls.neighbor_classifier(init_triage_history, case)
+                    script_result = prejudge_result
+                    script_result[list(script_result.keys())[0]]["result"] = None
+                elif algorithm == "logistic":
+                    prejudge_result = cls.logistic_regression(init_triage_history, case)
                     script_result = prejudge_result
                     script_result[list(script_result.keys())[0]]["result"] = None
         return script_result
@@ -149,6 +162,55 @@ class MLPrejudgeHelper:
         #         if cls.triage_priority[predict_triage] < cls.triage_priority[prejudge_result[automation_script_result_id]["result"]]:
         #             prejudge_result[automation_script_result_id]["result"] = predict_triage
 
+        return prejudge_result
+
+    @classmethod
+    def logistic_regression(cls, parameter, init_test_round_errors):
+        prejudge_result = {}
+        init_test_round_errors["error_type"] = init_test_round_errors["error_message"].apply(lambda x: SimplePrejudgeHelper.prejudge_error_message(x))
+        test_round_errors = init_test_round_errors.copy()
+        test_round_errors["avg_duration"] = test_round_errors["automation_script_id"].apply(lambda x: cls.get_avg_duration_of_script(cls.regression_db, x))
+        test_round_errors["avg_duration"] = pd.to_numeric(test_round_errors["avg_duration"])
+        test_round_errors["duration_offset"] = test_round_errors["script_duration"] - test_round_errors["avg_duration"]
+        min_duration = test_round_errors["duration_offset"].min()
+        max_duration = test_round_errors["duration_offset"].max()
+        if min_duration == max_duration:
+            test_round_errors["duration"] = test_round_errors["duration_offset"].apply(lambda x: 1)
+        else:
+            test_round_errors["duration"] = test_round_errors["duration_offset"].apply(lambda x: (x - min_duration) / (max_duration - min_duration))
+        test_round_errors["duration"] = pd.to_numeric(test_round_errors["duration"])
+        test_round_errors = pd.get_dummies(test_round_errors, columns=["env"], prefix_sep="_")
+        test_round_errors = pd.get_dummies(test_round_errors, columns=["browser"], prefix_sep="_")
+        test_round_errors = pd.get_dummies(test_round_errors, columns=["error_type"], prefix_sep="_")
+        to_drop = ["round_id", "result", "automation_case_id", "automation_script_id", "automation_case_result_id", "automation_script_result_id", "error_message", "script_duration", "avg_duration", "duration_offset"]
+        test_round_errors.drop(columns=to_drop, inplace=True)
+        missing_columns = list(set(parameter.columns.values) ^ set(test_round_errors.columns.values))
+        for column in missing_columns:
+            if column == "offset":
+                test_round_errors[column] = 1
+            else:
+                test_round_errors[column] = 0
+        init_test_round_errors["predict_triage"] = "tbd"
+        init_test_round_errors["calculate"] = "tbd"
+
+        columns = parameter.columns.values
+        for seq in range(len(test_round_errors)):
+            error = test_round_errors.iloc[seq]
+            calculate = 0
+            for c in columns:
+                calculate += error[c] * parameter.loc[0, c]
+            sigmoid_calculate = sigmoid(calculate)
+            predict_triage = "Product Error" if sigmoid_calculate > 0.5 else "Not Product Error"
+            init_test_round_errors.loc[seq, "predict_triage"] = predict_triage
+            init_test_round_errors.loc[seq, "calculate"] = sigmoid_calculate
+            automation_case_result_id = str(int(init_test_round_errors.iloc[seq]["automation_case_result_id"]))
+            automation_script_result_id = str(int(init_test_round_errors.iloc[seq]["automation_script_result_id"]))
+            if automation_script_result_id not in prejudge_result.keys():
+                prejudge_result[automation_script_result_id] = {"result": predict_triage, "cases": {automation_case_result_id: predict_triage}}
+            else:
+                prejudge_result[automation_script_result_id]["cases"][automation_case_result_id] = predict_triage
+                if cls.classify[predict_triage] < cls.classify[prejudge_result[automation_script_result_id]["result"]]:
+                    prejudge_result[automation_script_result_id]["result"] = predict_triage
         return prejudge_result
 
     @staticmethod

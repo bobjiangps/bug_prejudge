@@ -91,7 +91,12 @@ class PrejudgeProcess:
                     project_triage_history_file = os.path.join(os.getcwd(), "data", "triage_history_%s.csv" % project_name)
                     project_triage_history = pd.read_csv(project_triage_history_file, index_col=0)
                     init_test_round_results = self.generate_test_round_results_data_ml(regression_db)
-                    response["scripts"] = MLPrejudgeHelper.prejudge_all(project_triage_history, init_test_round_results)
+                    response["scripts"] = MLPrejudgeHelper.prejudge_all(project_triage_history, init_test_round_results, algorithm="knn")
+                elif Config.load_env("algorithm") == "logistic":
+                    project_parameter_file = os.path.join(os.getcwd(), "data", "parameter_%s.csv" % project_name)
+                    project_parameter = pd.read_csv(project_parameter_file)
+                    init_test_round_results = self.generate_test_round_results_data_ml(regression_db)
+                    response["scripts"] = MLPrejudgeHelper.prejudge_all(project_parameter, init_test_round_results, algorithm="logistic")
                 else:
                     raise Exception("unknown algorithm")
                 response["type"] = "ml"

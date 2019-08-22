@@ -25,12 +25,11 @@ def asc(data_mat, label_mat, step_size=0.001, max_iter=500):
     return weights.getA()
 
 
-def asc_with_target(data_mat, label_mat, step_size=0.001, target=0.8, timeout=3600):
+def asc_with_target(data_mat, label_mat, step_size=0.001, target=0.5, timeout=3600):
     data_mat_np = np.mat(data_mat)
     label_mat_np = np.mat(label_mat).transpose()
     m, n = np.shape(data_mat_np)
     weights = np.ones((n, 1))
-    record_weights = np.ones((n, 1))
     loop_count = 0
     total = len(data_mat)
     temp_match_rate = 0
@@ -51,6 +50,7 @@ def asc_with_target(data_mat, label_mat, step_size=0.001, target=0.8, timeout=36
         print("--------------------")
         print("temp matched rate is:", temp_match_rate)
         print("current matched rate is:", current_match_rate)
+        print("weight is：", weights.flatten().tolist())
         if current_match_rate > target:
             if temp_match_rate > current_match_rate:
                 print("loop count: ", loop_count)
@@ -63,7 +63,6 @@ def asc_with_target(data_mat, label_mat, step_size=0.001, target=0.8, timeout=36
                 print("loop count: ", loop_count)
                 print("duration: ", end - start)
                 break
-        record_weights = weights
         temp_match_rate = current_match_rate
         weights = weights + step_size * data_mat_np.transpose() * error
-    return record_weights.getA()
+    return weights.getA()
