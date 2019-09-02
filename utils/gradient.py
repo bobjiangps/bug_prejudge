@@ -32,7 +32,8 @@ def asc_with_target(data_mat, label_mat, step_size=0.001, target=0.5, timeout=36
     weights = np.ones((n, 1))
     loop_count = 0
     total = len(data_mat)
-    temp_match_rate = 0
+    record_match_rate = 0
+    record_weights = np.ones((n, 1))
     interval = 0
     start = time.time()
     while True:
@@ -48,11 +49,11 @@ def asc_with_target(data_mat, label_mat, step_size=0.001, target=0.5, timeout=36
         matched_count = compare_result[1].tolist()[matched_index]
         current_match_rate = matched_count / total
         print("--------------------")
-        print("temp matched rate is:", temp_match_rate)
+        print("record matched rate is:", record_match_rate)
         print("current matched rate is:", current_match_rate)
         print("weight is：", weights.flatten().tolist())
-        if current_match_rate > target:
-            if temp_match_rate > current_match_rate:
+        if record_match_rate > target:
+            if record_match_rate > current_match_rate:
                 print("loop count: ", loop_count)
                 print("duration: ", time.time() - start)
                 break
@@ -63,6 +64,11 @@ def asc_with_target(data_mat, label_mat, step_size=0.001, target=0.5, timeout=36
                 print("loop count: ", loop_count)
                 print("duration: ", end - start)
                 break
-        temp_match_rate = current_match_rate
+        if record_match_rate < current_match_rate:
+            record_match_rate = current_match_rate
+            record_weights = weights
         weights = weights + step_size * data_mat_np.transpose() * error
-    return weights.getA()
+    print("======================")
+    print("final record matched rate is:", record_match_rate)
+    print("final weight is：", record_weights.flatten().tolist())
+    return record_weights.getA()
