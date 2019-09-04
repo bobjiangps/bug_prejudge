@@ -27,28 +27,28 @@ def generate_triage_history_data(db_conn, file_path):
         triage_history_data["error_type"] = triage_history_data["error_message"].apply(lambda x: SimplePrejudgeHelper.prejudge_error_message(x))
         triage_history_data.to_csv(file_path)
         print("there are %d rows in database when query the triage history of all projects\n" % len(triage_history_data))
-        # preprocess 20190816
         project_list = triage_history_data["project"].unique()
         for project in project_list:
             convert_triage_data = triage_history_data[triage_history_data["project"] == project]
-            print(len(convert_triage_data), project)
             convert_triage_data["avg_duration"] = convert_triage_data["automation_script_id"].apply(lambda x: get_avg_duration_of_script(db_conn, x))
             convert_triage_data["avg_duration"] = pd.to_numeric(convert_triage_data["avg_duration"])
             convert_triage_data["duration_offset"] = convert_triage_data["script_duration"] - convert_triage_data["avg_duration"]
-            min_duration = convert_triage_data["duration_offset"].min()
-            max_duration = convert_triage_data["duration_offset"].max()
-            convert_triage_data["duration"] = convert_triage_data["duration_offset"].apply(lambda x: (x - min_duration) / (max_duration - min_duration))
+            convert_triage_data["duration"] = convert_triage_data["duration_offset"] / convert_triage_data["avg_duration"]
+            # min_duration = convert_triage_data["duration_offset"].min()
+            # max_duration = convert_triage_data["duration_offset"].max()
+            # convert_triage_data["duration"] = convert_triage_data["duration_offset"].apply(lambda x: (x - min_duration) / (max_duration - min_duration))
             convert_triage_data = pd.get_dummies(convert_triage_data, columns=["env"], prefix_sep="_")
             convert_triage_data = pd.get_dummies(convert_triage_data, columns=["browser"], prefix_sep="_")
             convert_triage_data = pd.get_dummies(convert_triage_data, columns=["error_type"], prefix_sep="_")
             to_drop = ["round_id", "project", "automation_case_id", "automation_script_id", "error_message", "script_duration", "avg_duration", "duration_offset"]
             convert_triage_data.drop(columns=to_drop, inplace=True)
+            convert_triage_data.dropna(axis=0, subset=["duration"], inplace=True)
+            print(len(convert_triage_data), len(convert_triage_data.loc[convert_triage_data["triage_type"] == "Product Error"]), project)
             convert_file_path = file_path.split(".csv")[0] + "_%s.csv" % project
             convert_triage_data.to_csv(convert_file_path)
         return True
 
 
-# preprocess 20190816
 def get_avg_duration_of_script(db_conn, script_id):
     avg_duration_sql = "select avg(UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(start_time)) as avg_duration from `automation_script_results` where automation_script_id=%s and DATE_SUB(CURDATE(), INTERVAL 12 MONTH) <= date(end_time)" % str(script_id)
     avg_duration = db_conn.get_first_result_from_database(avg_duration_sql)["avg_duration"]

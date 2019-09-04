@@ -87,11 +87,8 @@ class PrejudgeProcess:
             if has_triage:
                 print("go to ml prejudge")
                 if Config.load_env("algorithm") == "knn":
-                    # preprocess 20190816
-                    project_triage_history_file = os.path.join(os.getcwd(), "data", "triage_history_%s.csv" % project_name)
-                    project_triage_history = pd.read_csv(project_triage_history_file, index_col=0)
                     init_test_round_results = self.generate_test_round_results_data_ml(regression_db)
-                    response["scripts"] = MLPrejudgeHelper.prejudge_all(project_triage_history, init_test_round_results, algorithm="knn")
+                    response["scripts"] = MLPrejudgeHelper.prejudge_all(init_triage_history, init_test_round_results, algorithm="knn")
                     response["type"] = "knn"
                 elif Config.load_env("algorithm") == "logistic":
                     project_parameter_file = os.path.join(os.getcwd(), "data", "parameter_%s.csv" % project_name)

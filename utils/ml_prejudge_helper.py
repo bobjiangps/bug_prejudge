@@ -81,18 +81,17 @@ class MLPrejudgeHelper:
     def neighbor_classifier(cls, init_triage_history, init_test_round_errors, neighbor=3):
         prejudge_result = {}
         triage_history = init_triage_history.copy()
-        # # preprocess 20190816, to hide until 'triage history drop'
-        # triage_history["avg_duration"] = triage_history["automation_script_id"].apply(lambda x: cls.get_avg_duration_of_script(cls.regression_db, x))
-        # triage_history["avg_duration"] = pd.to_numeric(triage_history["avg_duration"])
-        # triage_history["duration_offset"] = triage_history["script_duration"] - triage_history["avg_duration"]
-        # min_duration = triage_history["duration_offset"].min()
-        # max_duration = triage_history["duration_offset"].max()
-        # triage_history["duration"] = triage_history["duration_offset"].apply(lambda x: (x - min_duration) / (max_duration - min_duration))
-        # triage_history = pd.get_dummies(triage_history, columns=["env"], prefix_sep="_")
-        # triage_history = pd.get_dummies(triage_history, columns=["browser"], prefix_sep="_")
-        # triage_history = pd.get_dummies(triage_history, columns=["error_type"], prefix_sep="_")
-        # to_drop = ["round_id", "project", "automation_case_id", "automation_script_id", "error_message", "script_duration", "avg_duration", "duration_offset"]
-        # triage_history.drop(columns=to_drop, inplace=True)
+        triage_history["avg_duration"] = triage_history["automation_script_id"].apply(lambda x: cls.get_avg_duration_of_script(cls.regression_db, x))
+        triage_history["avg_duration"] = pd.to_numeric(triage_history["avg_duration"])
+        triage_history["duration_offset"] = triage_history["script_duration"] - triage_history["avg_duration"]
+        min_duration = triage_history["duration_offset"].min()
+        max_duration = triage_history["duration_offset"].max()
+        triage_history["duration"] = triage_history["duration_offset"].apply(lambda x: (x - min_duration) / (max_duration - min_duration))
+        triage_history = pd.get_dummies(triage_history, columns=["env"], prefix_sep="_")
+        triage_history = pd.get_dummies(triage_history, columns=["browser"], prefix_sep="_")
+        triage_history = pd.get_dummies(triage_history, columns=["error_type"], prefix_sep="_")
+        to_drop = ["round_id", "project", "automation_case_id", "automation_script_id", "error_message", "script_duration", "avg_duration", "duration_offset"]
+        triage_history.drop(columns=to_drop, inplace=True)
 
         init_test_round_errors["error_type"] = init_test_round_errors["error_message"].apply(lambda x: SimplePrejudgeHelper.prejudge_error_message(x))
         test_round_errors = init_test_round_errors.copy()
@@ -172,13 +171,14 @@ class MLPrejudgeHelper:
         test_round_errors["avg_duration"] = test_round_errors["automation_script_id"].apply(lambda x: cls.get_avg_duration_of_script(cls.regression_db, x))
         test_round_errors["avg_duration"] = pd.to_numeric(test_round_errors["avg_duration"])
         test_round_errors["duration_offset"] = test_round_errors["script_duration"] - test_round_errors["avg_duration"]
-        min_duration = test_round_errors["duration_offset"].min()
-        max_duration = test_round_errors["duration_offset"].max()
-        if min_duration == max_duration:
-            test_round_errors["duration"] = test_round_errors["duration_offset"].apply(lambda x: 1)
-        else:
-            test_round_errors["duration"] = test_round_errors["duration_offset"].apply(lambda x: (x - min_duration) / (max_duration - min_duration))
-        test_round_errors["duration"] = pd.to_numeric(test_round_errors["duration"])
+        test_round_errors["duration"] = test_round_errors["duration_offset"] / test_round_errors["avg_duration"]
+        # min_duration = test_round_errors["duration_offset"].min()
+        # max_duration = test_round_errors["duration_offset"].max()
+        # if min_duration == max_duration:
+        #     test_round_errors["duration"] = test_round_errors["duration_offset"].apply(lambda x: 1)
+        # else:
+        #     test_round_errors["duration"] = test_round_errors["duration_offset"].apply(lambda x: (x - min_duration) / (max_duration - min_duration))
+        # test_round_errors["duration"] = pd.to_numeric(test_round_errors["duration"])
         test_round_errors = pd.get_dummies(test_round_errors, columns=["env"], prefix_sep="_")
         test_round_errors = pd.get_dummies(test_round_errors, columns=["browser"], prefix_sep="_")
         test_round_errors = pd.get_dummies(test_round_errors, columns=["error_type"], prefix_sep="_")
