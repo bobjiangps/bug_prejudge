@@ -82,9 +82,10 @@ class PrejudgeProcess:
             init_triage_history = pd.read_csv(triage_history_file, index_col=0)
             init_triage_history = init_triage_history[init_triage_history["project"] == project_name]
             has_triage = True if len(init_triage_history) > Config.load_env("triage_trigger_ml") else False
+            bug_amount = len(init_triage_history[init_triage_history["triage_type"] == "Product Error"])
 
             # different logic with has_triage flag
-            if has_triage:
+            if has_triage and bug_amount > (len(init_triage_history) * 0.05):
                 print("go to ml prejudge")
                 if Config.load_env("algorithm") == "knn":
                     init_test_round_results = self.generate_test_round_results_data_ml(regression_db)
