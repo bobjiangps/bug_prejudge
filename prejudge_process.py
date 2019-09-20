@@ -83,9 +83,11 @@ class PrejudgeProcess:
             init_triage_history = init_triage_history[init_triage_history["project"] == project_name]
             has_triage = True if len(init_triage_history) > Config.load_env("triage_trigger_ml") else False
             bug_amount = len(init_triage_history[init_triage_history["triage_type"] == "Product Error"])
+            include_projects = [p.strip() for p in Config.load_env("apply_to_project").split(",")] if Config.load_env("apply_to_project") else []
+            apply_ml = True if len(include_projects) == 0 or project_name in include_projects else False
 
             # different logic with has_triage flag
-            if has_triage and bug_amount > (len(init_triage_history) * 0.05):
+            if has_triage and bug_amount > (len(init_triage_history) * 0.05) and apply_ml:
                 print("go to ml prejudge")
                 if Config.load_env("algorithm") == "knn":
                     init_test_round_results = self.generate_test_round_results_data_ml(regression_db)

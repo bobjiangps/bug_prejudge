@@ -2,8 +2,8 @@
 prejudge the regression errors by history data
 
 #### related technology:
-- data analysis: pandas
-- natural language processing (NLP): Fuzzywuzzy
+- data analysis: pandas, numpy
+- natural language processing (NLP): 
 - machine learning (ML): KNN, Logistic Regression
 - web service: flask, uwsgi, nginx
 
