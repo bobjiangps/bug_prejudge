@@ -25,6 +25,41 @@ def asc(data_mat, label_mat, step_size=0.001, max_iter=500):
     return weights.getA()
 
 
+def asc_with_target_old(data_mat, label_mat, step_size=0.001, target=0.5, timeout=3600):
+    data_mat_np = np.mat(data_mat)
+    label_mat_np = np.mat(label_mat).transpose()
+    m, n = np.shape(data_mat_np)
+    weights = np.ones((n, 1))
+    loop_count = 0
+    total = len(data_mat)
+    temp_match_rate = 0
+    interval = 0
+    start = time.time()
+    while True:
+        loop_count += 1
+        interval += 1
+        h = sigmoid(data_mat_np * weights)
+        error = label_mat_np - h
+        trained_result = []
+        for i in h:
+            trained_result.append(classify(i[0][0]))
+        compare_result = np.unique(np.array(trained_result) - np.array(label_mat), return_counts=True)
+        matched_index = compare_result[0].tolist().index(0)
+        matched_count = compare_result[1].tolist()[matched_index]
+        current_match_rate = matched_count / total
+        if current_match_rate > target:
+            if temp_match_rate > current_match_rate:
+                break
+        if interval >= timeout:
+            interval = 0
+            end = time.time()
+            if end - start >= timeout:
+                break
+        temp_match_rate = current_match_rate
+        weights = weights + step_size * data_mat_np.transpose() * error
+    return weights.getA()
+
+
 def asc_with_target(data_mat, label_mat, step_size=0.001, target=0.5, timeout=3600, lean_to_bug=False):
     data_mat_np = np.mat(data_mat)
     label_mat_np = np.mat(label_mat).transpose()
