@@ -200,7 +200,8 @@ class MLPrejudgeHelper:
             for c in columns:
                 calculate += error[c] * parameter.loc[0, c]
             sigmoid_calculate = sigmoid(calculate)
-            predict_triage = "Product Error" if sigmoid_calculate > 0.5 else "Not Product Error"
+            # predict_triage = "Product Error" if sigmoid_calculate > 0.5 else "Not Product Error"
+            predict_triage = "suspect bug" if sigmoid_calculate > 0.5 else init_test_round_errors.iloc[seq]["error_type"]
             init_test_round_errors.loc[seq, "predict_triage"] = predict_triage
             init_test_round_errors.loc[seq, "calculate"] = sigmoid_calculate
             automation_case_result_id = str(int(init_test_round_errors.iloc[seq]["automation_case_result_id"]))
@@ -209,7 +210,8 @@ class MLPrejudgeHelper:
                 prejudge_result[automation_script_result_id] = {"result": predict_triage, "cases": {automation_case_result_id: predict_triage}}
             else:
                 prejudge_result[automation_script_result_id]["cases"][automation_case_result_id] = predict_triage
-                if cls.classify[predict_triage] < cls.classify[prejudge_result[automation_script_result_id]["result"]]:
+                # if cls.classify[predict_triage] < cls.classify[prejudge_result[automation_script_result_id]["result"]]:
+                if cls.error_priority[predict_triage] < cls.error_priority[prejudge_result[automation_script_result_id]["result"]]:
                     prejudge_result[automation_script_result_id]["result"] = predict_triage
         return prejudge_result
 

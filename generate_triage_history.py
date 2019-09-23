@@ -13,7 +13,7 @@ def generate_triage_history_data(db_conn, file_path):
         left join `browsers` as b on tr.browser_id=b.id
         left join `projects` as p on p.id=tr.project_id
         left join `error_types` as et on et.id=acr.error_type_id
-        where et.name is not NULL  
+        where et.name is not NULL and p.name is not NULL 
         ORDER BY `round_id`  ASC
     """
     print("generate triage history data of all projects")

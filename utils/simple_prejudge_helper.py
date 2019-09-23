@@ -20,7 +20,7 @@ class SimplePrejudgeHelper:
                         ".*Execute - open .*::.*- failed.*", ".*Execute - select .*::.*- failed.*"]
     env_issue_re = [".*Driver info:.*", ".*no implicit conversion.*", ".*Internal Server Error.*"]
     net_issue_re = [".*Net::ReadTimeout.*", ".*Request Timeout.*"]
-    code_error_re = [".*undefined method.*", ".*undefined local variable.*", ".*uninitialized constant.*"]
+    code_error_re = [".*undefined method.*", ".*undefined local variable.*", ".*uninitialized constant.*", ".*invalid argument.*"]
 
     @classmethod
     def prejudge_case(cls, case):
@@ -94,5 +94,5 @@ class SimplePrejudgeHelper:
             else:
                 prejudge_type = "other"
         else:
-            prejudge_type = error_message
+            prejudge_type = "other" if len(error_message) == 0 else error_message
         return prejudge_type
