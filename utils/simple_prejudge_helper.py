@@ -94,5 +94,5 @@ class SimplePrejudgeHelper:
             else:
                 prejudge_type = "other"
         else:
-            prejudge_type = "other" if len(error_message) == 0 else error_message
+            prejudge_type = "other" if not error_message or len(error_message) == 0 else error_message
         return prejudge_type
