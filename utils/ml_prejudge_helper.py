@@ -63,8 +63,8 @@ class MLPrejudgeHelper:
         else:
             case = init_test_round_results.iloc[[0]]
             script_result_id = str(case.automation_script_result_id[0])
-            if case.result[0] == "pass":
-                case_prejudge_result = SimplePrejudgeHelper.prejudge_case(case)
+            if case.result[0] in ["pass", "not-run"]:
+                case_prejudge_result = SimplePrejudgeHelper.prejudge_case(case.loc[0])
                 script_result[script_result_id] = {"result": None, "cases": {str(case.automation_case_result_id[0]): case_prejudge_result}}
             else:
                 if algorithm == "knn":
