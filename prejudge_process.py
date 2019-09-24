@@ -48,8 +48,11 @@ class PrejudgeProcess:
                 print("Normal Test Round..")
                 normal_round = True
         else:
-            pass_rate_quantile_ten_percent = regression_history.loc[regression_history["test_suite_id"] == current_test_round["test_suite_id"]].pass_rate.quantile(.1)
-            average_pass_rate = regression_history.loc[regression_history["test_suite_id"] == current_test_round["test_suite_id"]].pass_rate.mean()
+            test_suite_pass_rate = regression_history.loc[regression_history["test_suite_id"] == current_test_round["test_suite_id"]].pass_rate
+            if test_suite_pass_rate.dtypes == "object":
+                test_suite_pass_rate = test_suite_pass_rate.astype("float")
+            pass_rate_quantile_ten_percent = test_suite_pass_rate.quantile(.1)
+            average_pass_rate = test_suite_pass_rate.mean()
             print("10% quantile is:", "%.2f%%" % pass_rate_quantile_ten_percent)
             print("current pass rate is:", "%.2f%%" % current_test_round["pass_rate"])
             if (current_test_round["pass_rate"] <= pass_rate_quantile_ten_percent) or ((average_pass_rate - current_test_round["pass_rate"]) > Config.load_env("pass_rate_offset") * 100):
