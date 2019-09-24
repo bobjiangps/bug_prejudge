@@ -31,7 +31,7 @@ class SimplePrejudgeHelper:
         return prejudge_type
 
     @classmethod
-    def prejudge_all(cls, cases):
+    def prejudge_all(cls, cases, script_not_case_flag=False):
         script_result = {}
         if len(cases) > 1:
             for index in range(len(cases)):
@@ -48,7 +48,10 @@ class SimplePrejudgeHelper:
             case = cases.iloc[0]
             script_result_id = str(case.automation_script_result_id)
             case_prejudge_result = cls.prejudge_case(case)
-            script_result[script_result_id] = {"result": None, "cases": {str(case.id): case_prejudge_result}}
+            if script_not_case_flag:
+                script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.id): case_prejudge_result}}
+            else:
+                script_result[script_result_id] = {"result": None, "cases": {str(case.id): case_prejudge_result}}
         return script_result
 
     @classmethod

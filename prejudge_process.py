@@ -65,6 +65,7 @@ class PrejudgeProcess:
         # generate error data
         round_errors = self.generate_test_round_errors_data(regression_db)
         round_all_results = self.generate_test_round_results_data(regression_db)
+        script_not_case = True if self.automation_script_result_id and not self.automation_case_result_id else False
         if len(round_errors) > 0:
             # if normal_round:
             #     most_failure_element = ErrorAnalyzer.check_element_caused_most_failures(round_errors)
@@ -94,13 +95,13 @@ class PrejudgeProcess:
                 print("go to ml prejudge")
                 if Config.load_env("algorithm") == "knn":
                     init_test_round_results = self.generate_test_round_results_data_ml(regression_db)
-                    response["scripts"] = MLPrejudgeHelper.prejudge_all(init_triage_history, init_test_round_results, algorithm="knn")
+                    response["scripts"] = MLPrejudgeHelper.prejudge_all(init_triage_history, init_test_round_results, script_not_case_flag=script_not_case, algorithm="knn")
                     response["type"] = "knn"
                 elif Config.load_env("algorithm") == "logistic":
                     project_parameter_file = os.path.join(os.getcwd(), "data", "parameter_%s.csv" % project_name)
                     project_parameter = pd.read_csv(project_parameter_file)
                     init_test_round_results = self.generate_test_round_results_data_ml(regression_db)
-                    response["scripts"] = MLPrejudgeHelper.prejudge_all(project_parameter, init_test_round_results, algorithm="logistic")
+                    response["scripts"] = MLPrejudgeHelper.prejudge_all(project_parameter, init_test_round_results, script_not_case_flag=script_not_case, algorithm="logistic")
                     response["type"] = "logistic"
                 else:
                     raise Exception("unknown algorithm")
@@ -114,11 +115,11 @@ class PrejudgeProcess:
                 # response["type"] = "ml"
             else:
                 print("go to simple prejudge")
-                response["scripts"] = SimplePrejudgeHelper.prejudge_all(round_all_results)
+                response["scripts"] = SimplePrejudgeHelper.prejudge_all(round_all_results, script_not_case_flag=script_not_case)
                 response["type"] = "simple"
         else:
             print("go to simple prejudge")
-            response["scripts"] = SimplePrejudgeHelper.prejudge_all(round_all_results)
+            response["scripts"] = SimplePrejudgeHelper.prejudge_all(round_all_results, script_not_case_flag=script_not_case)
             response["type"] = "simple"
 
         response["message"] = self.summary_prejudged_errors(response["scripts"])

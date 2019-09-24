@@ -39,7 +39,7 @@ class MLPrejudgeHelper:
     }
 
     @classmethod
-    def prejudge_all(cls, init_triage_history, init_test_round_results, algorithm="knn"):
+    def prejudge_all(cls, init_triage_history, init_test_round_results, script_not_case_flag=False, algorithm="knn"):
         script_result = {}
         if len(init_test_round_results) > 1:
             errors = init_test_round_results[init_test_round_results["result"] == "failed"].copy()
@@ -65,15 +65,19 @@ class MLPrejudgeHelper:
             script_result_id = str(case.automation_script_result_id[0])
             if case.result[0] in ["pass", "not-run"]:
                 case_prejudge_result = SimplePrejudgeHelper.prejudge_case(case.loc[0])
-                script_result[script_result_id] = {"result": None, "cases": {str(case.automation_case_result_id[0]): case_prejudge_result}}
+                if script_not_case_flag:
+                    script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.automation_case_result_id[0]): case_prejudge_result}}
+                else:
+                    script_result[script_result_id] = {"result": None, "cases": {str(case.automation_case_result_id[0]): case_prejudge_result}}
             else:
                 if algorithm == "knn":
                     prejudge_result = cls.neighbor_classifier(init_triage_history, case)
-                    script_result = prejudge_result
-                    script_result[list(script_result.keys())[0]]["result"] = None
                 elif algorithm == "logistic":
                     prejudge_result = cls.logistic_regression(init_triage_history, case)
-                    script_result = prejudge_result
+                else:
+                    prejudge_result = None
+                script_result = prejudge_result
+                if not script_not_case_flag:
                     script_result[list(script_result.keys())[0]]["result"] = None
         return script_result
 
