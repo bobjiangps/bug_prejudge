@@ -60,4 +60,4 @@ if __name__ == '__main__':
     # api.add_resource(PrejudgeCase, "/prejudge/test_round/<int:round_id>/test_script/<int:script_id>/test_case/<int:case_id>/")
 
     # app.run("localhost", 8008, debug=True)
-    app.run(host="127.0.0.1", port=8008)
+    app.run(host="127.0.0.1", port=8008, debug=False, threaded=True)

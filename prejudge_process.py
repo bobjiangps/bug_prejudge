@@ -28,39 +28,39 @@ class PrejudgeProcess:
         current_test_round = regression_db.get_first_result_from_database("select * from test_rounds where id=%d;" % int(self.test_round_id))
         print("specified test round information:\n", current_test_round)
         project_name = regression_db.get_first_result_from_database("select name from projects where id=%d" % int(current_test_round["project_id"]))["name"]
-        regression_history_file = os.path.join(os.getcwd(), "data", "regression_history_%s.csv" % project_name)
         triage_history_file = os.path.join(os.getcwd(), "data", "triage_history.csv")
 
-        # generate regression history
-        self.generate_regression_history_data(regression_db, current_test_round["project_id"], regression_history_file)
-
-        # decide normal test round or not
-        regression_history = pd.read_csv(regression_history_file)
-        to_drop = ["counter", "sprint", "exist_regression_report"]
-        regression_history.drop(columns=to_drop, inplace=True)
-        if current_test_round["test_suite_id"] not in regression_history["test_suite_id"]:
-            print("Test round with new test suite, no history record")
-            # check pass rate line for new test suite
-            if current_test_round["pass_rate"] < Config.load_env("pass_rate_line"):
-                print("NOT normal Test Round !!! need to check error messages first")
-                normal_round = False  # normal_round to be used in future
-            else:
-                print("Normal Test Round..")
-                normal_round = True
-        else:
-            test_suite_pass_rate = regression_history.loc[regression_history["test_suite_id"] == current_test_round["test_suite_id"]].pass_rate
-            if test_suite_pass_rate.dtypes == "object":
-                test_suite_pass_rate = test_suite_pass_rate.astype("float")
-            pass_rate_quantile_ten_percent = test_suite_pass_rate.quantile(.1)
-            average_pass_rate = test_suite_pass_rate.mean()
-            print("10% quantile is:", "%.2f%%" % pass_rate_quantile_ten_percent)
-            print("current pass rate is:", "%.2f%%" % current_test_round["pass_rate"])
-            if (current_test_round["pass_rate"] <= pass_rate_quantile_ten_percent) or ((average_pass_rate - current_test_round["pass_rate"]) > Config.load_env("pass_rate_offset") * 100):
-                print("NOT normal Test Round !!! need to check error messages first")
-                normal_round = False
-            else:
-                print("Normal Test Round..")
-                normal_round = True
+        # # generate regression history
+        # regression_history_file = os.path.join(os.getcwd(), "data", "regression_history_%s.csv" % project_name)
+        # self.generate_regression_history_data(regression_db, current_test_round["project_id"], regression_history_file)
+        #
+        # # decide normal test round or not
+        # regression_history = pd.read_csv(regression_history_file)
+        # to_drop = ["counter", "sprint", "exist_regression_report"]
+        # regression_history.drop(columns=to_drop, inplace=True)
+        # if current_test_round["test_suite_id"] not in regression_history["test_suite_id"]:
+        #     print("Test round with new test suite, no history record")
+        #     # check pass rate line for new test suite
+        #     if current_test_round["pass_rate"] < Config.load_env("pass_rate_line"):
+        #         print("NOT normal Test Round !!! need to check error messages first")
+        #         normal_round = False  # normal_round to be used in future
+        #     else:
+        #         print("Normal Test Round..")
+        #         normal_round = True
+        # else:
+        #     test_suite_pass_rate = regression_history.loc[regression_history["test_suite_id"] == current_test_round["test_suite_id"]].pass_rate
+        #     if test_suite_pass_rate.dtypes == "object":
+        #         test_suite_pass_rate = test_suite_pass_rate.astype("float")
+        #     pass_rate_quantile_ten_percent = test_suite_pass_rate.quantile(.1)
+        #     average_pass_rate = test_suite_pass_rate.mean()
+        #     print("10% quantile is:", "%.2f%%" % pass_rate_quantile_ten_percent)
+        #     print("current pass rate is:", "%.2f%%" % current_test_round["pass_rate"])
+        #     if (current_test_round["pass_rate"] <= pass_rate_quantile_ten_percent) or ((average_pass_rate - current_test_round["pass_rate"]) > Config.load_env("pass_rate_offset") * 100):
+        #         print("NOT normal Test Round !!! need to check error messages first")
+        #         normal_round = False
+        #     else:
+        #         print("Normal Test Round..")
+        #         normal_round = True
 
         # generate error data
         round_errors = self.generate_test_round_errors_data(regression_db)
