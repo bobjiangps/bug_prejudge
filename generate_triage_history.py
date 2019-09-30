@@ -50,8 +50,15 @@ def generate_triage_history_data(db_conn, file_path):
 
 
 def get_avg_duration_of_script(db_conn, script_id):
-    avg_duration_sql = "select avg(UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(start_time)) as avg_duration from `automation_script_results` where automation_script_id=%s and DATE_SUB(CURDATE(), INTERVAL 12 MONTH) <= date(end_time)" % str(script_id)
-    avg_duration = db_conn.get_first_result_from_database(avg_duration_sql)["avg_duration"]
+    error_limit = 10
+    while error_limit:
+        try:
+            avg_duration_sql = "select avg(UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(start_time)) as avg_duration from `automation_script_results` where automation_script_id=%s and DATE_SUB(CURDATE(), INTERVAL 12 MONTH) <= date(end_time)" % str(script_id)
+            avg_duration = db_conn.get_first_result_from_database(avg_duration_sql)["avg_duration"]
+            break
+        except:
+            print("error when get avg duration")
+            error_limit -= 1
     return avg_duration
 
 
