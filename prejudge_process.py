@@ -101,7 +101,8 @@ class PrejudgeProcess:
                     project_parameter_file = os.path.join(os.getcwd(), "data", "parameter_%s.csv" % project_name)
                     project_parameter = pd.read_csv(project_parameter_file)
                     init_test_round_results = self.generate_test_round_results_data_ml(regression_db)
-                    response["scripts"] = MLPrejudgeHelper.prejudge_all(project_parameter, init_test_round_results, script_not_case_flag=script_not_case, algorithm="logistic")
+                    project_triaged_bug_file = os.path.join(os.getcwd(), "data", "triaged_bug_%s.csv" % project_name)
+                    response["scripts"] = MLPrejudgeHelper.prejudge_all(project_parameter, init_test_round_results, script_not_case_flag=script_not_case, algorithm="logistic", logistic_bug_file=project_triaged_bug_file)
                     response["type"] = "logistic"
                 else:
                     raise Exception("unknown algorithm")
@@ -202,9 +203,10 @@ class PrejudgeProcess:
         for v in results.values():
             if v["result"] not in ["not-run", "pass"]:
                 for c in v["cases"].values():
-                    if c not in ["not-run", "pass"]:
-                        if c not in summary.keys():
-                            summary[c] = 1
+                    c_r = c["result"]
+                    if c_r not in ["not-run", "pass"]:
+                        if c_r not in summary.keys():
+                            summary[c_r] = 1
                         else:
-                            summary[c] += 1
+                            summary[c_r] += 1
         return summary

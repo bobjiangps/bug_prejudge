@@ -1,8 +1,10 @@
 from utils.mysql_helper import MysqlConnection
 from utils.simple_prejudge_helper import SimplePrejudgeHelper
 from utils.gradient import sigmoid
+from fuzzywuzzy import fuzz
 import pandas as pd
 import math
+import os
 
 
 class MLPrejudgeHelper:
@@ -39,7 +41,7 @@ class MLPrejudgeHelper:
     }
 
     @classmethod
-    def prejudge_all(cls, init_triage_history, init_test_round_results, script_not_case_flag=False, algorithm="knn"):
+    def prejudge_all(cls, init_triage_history, init_test_round_results, script_not_case_flag=False, algorithm="knn", logistic_bug_file=None):
         script_result = {}
         if len(init_test_round_results) > 1:
             errors = init_test_round_results[init_test_round_results["result"] == "failed"].copy()
@@ -49,16 +51,16 @@ class MLPrejudgeHelper:
                 script_result_id = str(case.automation_script_result_id)
                 case_prejudge_result = SimplePrejudgeHelper.prejudge_case(case)
                 if script_result_id not in script_result.keys():
-                    script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.automation_case_result_id): case_prejudge_result}}
+                    script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.automation_case_result_id): {"result": case_prejudge_result}}}
                 else:
-                    script_result[script_result_id]["cases"][str(case.automation_case_result_id)] = case_prejudge_result
+                    script_result[script_result_id]["cases"][str(case.automation_case_result_id)] = {"result": case_prejudge_result}
                     if cls.error_priority[case_prejudge_result] < cls.error_priority[script_result[script_result_id]["result"]]:
                         script_result[script_result_id]["result"] = case_prejudge_result
             if algorithm == "knn":
                 error_results = cls.neighbor_classifier(init_triage_history, errors)
                 cls.merge_result(script_result, error_results)
             elif algorithm == "logistic":
-                error_results = cls.logistic_regression(init_triage_history, errors)
+                error_results = cls.logistic_regression(init_triage_history, errors, bug_file=logistic_bug_file)
                 cls.merge_result(script_result, error_results)
         else:
             case = init_test_round_results.iloc[[0]]
@@ -66,14 +68,14 @@ class MLPrejudgeHelper:
             if case.result[0] in ["pass", "not-run"]:
                 case_prejudge_result = SimplePrejudgeHelper.prejudge_case(case.loc[0])
                 if script_not_case_flag:
-                    script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.automation_case_result_id[0]): case_prejudge_result}}
+                    script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.automation_case_result_id[0]): {"result": case_prejudge_result}}}
                 else:
-                    script_result[script_result_id] = {"result": None, "cases": {str(case.automation_case_result_id[0]): case_prejudge_result}}
+                    script_result[script_result_id] = {"result": None, "cases": {str(case.automation_case_result_id[0]): {"result": case_prejudge_result}}}
             else:
                 if algorithm == "knn":
                     prejudge_result = cls.neighbor_classifier(init_triage_history, case)
                 elif algorithm == "logistic":
-                    prejudge_result = cls.logistic_regression(init_triage_history, case)
+                    prejudge_result = cls.logistic_regression(init_triage_history, case, bug_file=logistic_bug_file)
                 else:
                     prejudge_result = None
                 script_result = prejudge_result
@@ -168,7 +170,7 @@ class MLPrejudgeHelper:
         return prejudge_result
 
     @classmethod
-    def logistic_regression(cls, parameter, init_test_round_errors):
+    def logistic_regression(cls, parameter, init_test_round_errors, bug_file=None):
         prejudge_result = {}
         init_test_round_errors["error_type"] = init_test_round_errors["error_message"].apply(lambda x: SimplePrejudgeHelper.prejudge_error_message(x))
         test_round_errors = init_test_round_errors.copy()
@@ -197,6 +199,7 @@ class MLPrejudgeHelper:
         init_test_round_errors["predict_triage"] = "tbd"
         init_test_round_errors["calculate"] = "tbd"
 
+        existent_bugs = pd.read_csv(bug_file) if bug_file and os.path.exists(bug_file) else []
         columns = parameter.columns.values
         for seq in range(len(test_round_errors)):
             error = test_round_errors.iloc[seq]
@@ -205,15 +208,40 @@ class MLPrejudgeHelper:
                 calculate += error[c] * parameter.loc[0, c]
             sigmoid_calculate = sigmoid(calculate)
             # predict_triage = "Product Error" if sigmoid_calculate > 0.5 else "Not Product Error"
-            predict_triage = "suspect bug" if sigmoid_calculate > 0.5 else init_test_round_errors.iloc[seq]["error_type"]
+            # predict_triage = "suspect bug" if sigmoid_calculate > 0.5 else init_test_round_errors.iloc[seq]["error_type"]
+            predict_match_bug = None
+            if sigmoid_calculate > 0.5:
+                predict_triage = "suspect bug"
+                if len(existent_bugs) > 0:
+                    print("check old bug list")
+                    init_error = init_test_round_errors.iloc[seq]
+                    for bug_seq in range(len(existent_bugs)):
+                        temp_bug = existent_bugs.iloc[bug_seq]
+                        if str(init_error.automation_case_id) == str(temp_bug.automation_case_id) and str(init_error.automation_script_id) == str(temp_bug.automation_script_id) \
+                           and init_error.env == temp_bug.env and init_error.browser == temp_bug.browser and fuzz.ratio(str(init_error.error_message), str(temp_bug.error_message)) >= 95:
+                            predict_match_bug = temp_bug.bug_id
+                            break
+            else:
+                predict_triage = init_test_round_errors.iloc[seq]["error_type"]
             init_test_round_errors.loc[seq, "predict_triage"] = predict_triage
             init_test_round_errors.loc[seq, "calculate"] = sigmoid_calculate
             automation_case_result_id = str(int(init_test_round_errors.iloc[seq]["automation_case_result_id"]))
             automation_script_result_id = str(int(init_test_round_errors.iloc[seq]["automation_script_result_id"]))
             if automation_script_result_id not in prejudge_result.keys():
-                prejudge_result[automation_script_result_id] = {"result": predict_triage, "cases": {automation_case_result_id: predict_triage}}
+                if predict_match_bug:
+                    prejudge_result[automation_script_result_id] = {"result": predict_triage, "match_bug": predict_match_bug, "cases": {automation_case_result_id: {"result": predict_triage, "match_bug": predict_match_bug}}}
+                else:
+                    prejudge_result[automation_script_result_id] = {"result": predict_triage, "cases": {automation_case_result_id: {"result": predict_triage}}}
             else:
-                prejudge_result[automation_script_result_id]["cases"][automation_case_result_id] = predict_triage
+                # prejudge_result[automation_script_result_id]["cases"][automation_case_result_id]["result"] = predict_triage
+                prejudge_result[automation_script_result_id]["cases"][automation_case_result_id] = {"result": predict_triage}
+                if predict_match_bug:
+                    prejudge_result[automation_script_result_id]["cases"][automation_case_result_id]["match_bug"] = predict_match_bug
+                    if "match_bug" in prejudge_result[automation_script_result_id].keys():
+                        if prejudge_result[automation_script_result_id]["match_bug"].find(predict_match_bug) < 0:
+                            prejudge_result[automation_script_result_id]["match_bug"] += ", %s" % predict_match_bug
+                    else:
+                        prejudge_result[automation_script_result_id]["match_bug"] = predict_match_bug
                 # if cls.classify[predict_triage] < cls.classify[prejudge_result[automation_script_result_id]["result"]]:
                 if cls.error_priority[predict_triage] < cls.error_priority[prejudge_result[automation_script_result_id]["result"]]:
                     prejudge_result[automation_script_result_id]["result"] = predict_triage
@@ -240,6 +268,10 @@ class MLPrejudgeHelper:
             if k in old_keys:
                 old_result[k]["cases"] = dict(old_result[k]["cases"], **new_result[k]["cases"])
                 old_result[k]["result"] = new_result[k]["result"]
+                try:
+                    old_result[k]["match_bug"] = new_result[k]["match_bug"]
+                except KeyError:
+                    pass
             else:
                 old_result[k] = new_result[k]
         return old_result
