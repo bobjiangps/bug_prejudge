@@ -39,9 +39,9 @@ class SimplePrejudgeHelper:
                 script_result_id = str(case.automation_script_result_id)
                 case_prejudge_result = cls.prejudge_case(case)
                 if script_result_id not in script_result.keys():
-                    script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.id): case_prejudge_result}}
+                    script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.id): {"result": case_prejudge_result}}}
                 else:
-                    script_result[script_result_id]["cases"][str(case.id)] = case_prejudge_result
+                    script_result[script_result_id]["cases"][str(case.id)] = {"result": case_prejudge_result}
                     if cls.error_priority[case_prejudge_result] < cls.error_priority[script_result[script_result_id]["result"]]:
                         script_result[script_result_id]["result"] = case_prejudge_result
         else:
@@ -49,9 +49,9 @@ class SimplePrejudgeHelper:
             script_result_id = str(case.automation_script_result_id)
             case_prejudge_result = cls.prejudge_case(case)
             if script_not_case_flag:
-                script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.id): case_prejudge_result}}
+                script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.id): {"result": case_prejudge_result}}}
             else:
-                script_result[script_result_id] = {"result": None, "cases": {str(case.id): case_prejudge_result}}
+                script_result[script_result_id] = {"result": None, "cases": {str(case.id): {"result": case_prejudge_result}}}
         return script_result
 
     @classmethod
