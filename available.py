@@ -27,7 +27,10 @@ if __name__ == "__main__":
 
     avg_cpu = sum(idle_cpu) / len(idle_cpu)
     avg_mem = sum(idle_memory) / len(idle_memory)
+    file_path = __file__.split(os.path.basename(__file__))[0]
+    os.chdir(file_path)
+    py_venv = os.path.join(file_path, "venv", "bin", "python")
     if avg_cpu > 80 and avg_mem > 50:
-        os.system("python %s" % os.path.join(__file__, "generate_triage_history.py"))
-        os.system("python %s" % os.path.join(__file__, "generate_triaged_bug.py"))
-        os.system("python %s" % os.path.join(__file__, "weight.py"))
+        os.system("%s %s" % (py_venv, os.path.join(file_path, "generate_triage_history.py")))
+        os.system("%s %s" % (py_venv, os.path.join(file_path, "generate_triaged_bug.py")))
+        os.system("%s %s" % (py_venv, os.path.join(file_path, "weight.py")))
