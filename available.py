@@ -28,6 +28,6 @@ if __name__ == "__main__":
     avg_cpu = sum(idle_cpu) / len(idle_cpu)
     avg_mem = sum(idle_memory) / len(idle_memory)
     if avg_cpu > 80 and avg_mem > 50:
-        os.system("python generate_triage_history.py")
-        os.system("python generate_triaged_bug.py")
-        os.system("python weight.py")
+        os.system("python %s" % os.path.join(__file__, "generate_triage_history.py"))
+        os.system("python %s" % os.path.join(__file__, "generate_triaged_bug.py"))
+        os.system("python %s" % os.path.join(__file__, "weight.py"))
