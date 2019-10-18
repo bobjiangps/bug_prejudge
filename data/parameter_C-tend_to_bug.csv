@@ -1,0 +1,2 @@
+duration,env_LV-INT,env_LV-PERF,env_LV-QA,env_LV-REG,env_LV-STG,browser_chrome,error_type_code error,error_type_element not found,error_type_execution environment issue,error_type_network issue,error_type_other,error_type_suspect bug,offset
+0.33984851267449523, -7.325052251986869, -0.980181458905832, 10.96490763217054, 4.092304266877582, -6.875515153495773, -4.123536965337938, -1.896793959302182, 7.884564884980608, -0.9548833344144518, -5.952487864347349, -2.436855519832692, 4.23291882756845, -4.123536965325914
