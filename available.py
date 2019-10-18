@@ -4,8 +4,14 @@ import time
 
 def get_cpu():
     # return float(os.popen("top -l 1 -s 0 | grep 'CPU usage'").read().split(",")[-1].strip().split(" ")[0].split("%")[0])
-    s = "top -bn1 | grep Cpu | awk '{printf \"%.2f\", $5}'"
-    return float(os.popen(s).read())
+    s = "top -bn5 | grep Cpu | awk '{printf \"%.2f--\", $5}'"
+    temp_cpu = os.popen(s).read().split("--")
+    temp_cpu.pop()
+    del(temp_cpu[0])
+    total = 0
+    for i in temp_cpu:
+        total += float(i)
+    return total / len(temp_cpu)
 
 
 def get_mem():
