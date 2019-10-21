@@ -12,6 +12,7 @@ class MLPrejudgeHelper:
     regression_db = MysqlConnection().connect("local_regression")
 
     error_priority = {
+        "existent bug": 0,
         "suspect bug": 1,
         "element not found": 2,
         "execution environment issue": 3,
@@ -51,9 +52,9 @@ class MLPrejudgeHelper:
                 script_result_id = str(case.automation_script_result_id)
                 case_prejudge_result = SimplePrejudgeHelper.prejudge_case(case)
                 if script_result_id not in script_result.keys():
-                    script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.automation_case_result_id): {"result": case_prejudge_result}}}
+                    script_result[script_result_id] = {"result": case_prejudge_result, "keyword": case_prejudge_result, "cases": {str(case.automation_case_result_id): {"result": case_prejudge_result, "keyword": case_prejudge_result}}}
                 else:
-                    script_result[script_result_id]["cases"][str(case.automation_case_result_id)] = {"result": case_prejudge_result}
+                    script_result[script_result_id]["cases"][str(case.automation_case_result_id)] = {"result": case_prejudge_result, "keyword": case_prejudge_result}
                     if cls.error_priority[case_prejudge_result] < cls.error_priority[script_result[script_result_id]["result"]]:
                         script_result[script_result_id]["result"] = case_prejudge_result
             if algorithm == "knn":
@@ -68,9 +69,9 @@ class MLPrejudgeHelper:
             if case.result[0] in ["pass", "not-run"]:
                 case_prejudge_result = SimplePrejudgeHelper.prejudge_case(case.loc[0])
                 if script_not_case_flag:
-                    script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.automation_case_result_id[0]): {"result": case_prejudge_result}}}
+                    script_result[script_result_id] = {"result": case_prejudge_result, "keyword": case_prejudge_result, "cases": {str(case.automation_case_result_id[0]): {"result": case_prejudge_result, "keyword": case_prejudge_result}}}
                 else:
-                    script_result[script_result_id] = {"result": None, "cases": {str(case.automation_case_result_id[0]): {"result": case_prejudge_result}}}
+                    script_result[script_result_id] = {"result": None, "cases": {str(case.automation_case_result_id[0]): {"result": case_prejudge_result, "keyword": case_prejudge_result}}}
             else:
                 if algorithm == "knn":
                     prejudge_result = cls.neighbor_classifier(init_triage_history, case)
@@ -81,6 +82,7 @@ class MLPrejudgeHelper:
                 script_result = prejudge_result
                 if not script_not_case_flag:
                     script_result[list(script_result.keys())[0]]["result"] = None
+                    del script_result[list(script_result.keys())[0]]["keyword"]
         return script_result
 
     @classmethod
@@ -220,6 +222,7 @@ class MLPrejudgeHelper:
                         if str(init_error.automation_case_id) == str(temp_bug.automation_case_id) and str(init_error.automation_script_id) == str(temp_bug.automation_script_id) \
                            and init_error.env == temp_bug.env and init_error.browser == temp_bug.browser and fuzz.ratio(str(init_error.error_message), str(temp_bug.error_message)) >= 95:
                             predict_match_bug = temp_bug.bug_id
+                            predict_triage = "existent bug"
                             break
             else:
                 predict_triage = init_test_round_errors.iloc[seq]["error_type"]
@@ -229,19 +232,19 @@ class MLPrejudgeHelper:
             automation_script_result_id = str(int(init_test_round_errors.iloc[seq]["automation_script_result_id"]))
             if automation_script_result_id not in prejudge_result.keys():
                 if predict_match_bug:
-                    prejudge_result[automation_script_result_id] = {"result": predict_triage, "match_bug": predict_match_bug, "cases": {automation_case_result_id: {"result": predict_triage, "match_bug": predict_match_bug}}}
+                    prejudge_result[automation_script_result_id] = {"result": predict_triage, "keyword": predict_match_bug, "cases": {automation_case_result_id: {"result": predict_triage, "keyword": predict_match_bug}}}
                 else:
-                    prejudge_result[automation_script_result_id] = {"result": predict_triage, "cases": {automation_case_result_id: {"result": predict_triage}}}
+                    prejudge_result[automation_script_result_id] = {"result": predict_triage, "keyword": predict_triage, "cases": {automation_case_result_id: {"result": predict_triage, "keyword": SimplePrejudgeHelper.extract_error_keyword(predict_triage, init_test_round_errors.iloc[seq]["error_message"])}}}
             else:
                 # prejudge_result[automation_script_result_id]["cases"][automation_case_result_id]["result"] = predict_triage
-                prejudge_result[automation_script_result_id]["cases"][automation_case_result_id] = {"result": predict_triage}
                 if predict_match_bug:
-                    prejudge_result[automation_script_result_id]["cases"][automation_case_result_id]["match_bug"] = predict_match_bug
-                    if "match_bug" in prejudge_result[automation_script_result_id].keys():
-                        if prejudge_result[automation_script_result_id]["match_bug"].find(predict_match_bug) < 0:
-                            prejudge_result[automation_script_result_id]["match_bug"] += ", %s" % predict_match_bug
+                    prejudge_result[automation_script_result_id]["cases"][automation_case_result_id] = {"result": predict_triage, "keyword": predict_match_bug}
+                    if prejudge_result[automation_script_result_id]["keyword"] not in cls.error_priority.keys():
+                        prejudge_result[automation_script_result_id]["keyword"] += ", %s" % predict_match_bug
                     else:
-                        prejudge_result[automation_script_result_id]["match_bug"] = predict_match_bug
+                        prejudge_result[automation_script_result_id]["keyword"] = predict_match_bug
+                else:
+                    prejudge_result[automation_script_result_id]["cases"][automation_case_result_id] = {"result": predict_triage, "keyword": SimplePrejudgeHelper.extract_error_keyword(predict_triage, init_test_round_errors.iloc[seq]["error_message"])}
                 # if cls.classify[predict_triage] < cls.classify[prejudge_result[automation_script_result_id]["result"]]:
                 if cls.error_priority[predict_triage] < cls.error_priority[prejudge_result[automation_script_result_id]["result"]]:
                     prejudge_result[automation_script_result_id]["result"] = predict_triage
@@ -269,7 +272,7 @@ class MLPrejudgeHelper:
                 old_result[k]["cases"] = dict(old_result[k]["cases"], **new_result[k]["cases"])
                 old_result[k]["result"] = new_result[k]["result"]
                 try:
-                    old_result[k]["match_bug"] = new_result[k]["match_bug"]
+                    old_result[k]["keyword"] = new_result[k]["keyword"]
                 except KeyError:
                     pass
             else:

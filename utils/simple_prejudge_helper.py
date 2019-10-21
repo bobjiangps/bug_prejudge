@@ -14,13 +14,13 @@ class SimplePrejudgeHelper:
         "pass": 8
     }
 
-    log_error_re = [".*in .?logger_error.*"]
-    assert_fail_re = [".*Assert -.*- failed.*"]
-    element_error_re = [".*Execute - wait \w*::\w* to present.*", ".*The element.*does not exist.*",
-                        ".*Execute - open .*::.*- failed.*", ".*Execute - select .*::.*- failed.*"]
-    env_issue_re = [".*Driver info:.*", ".*no implicit conversion.*", ".*Internal Server Error.*"]
-    net_issue_re = [".*Net::ReadTimeout.*", ".*Request Timeout.*"]
-    code_error_re = [".*undefined method.*", ".*undefined local variable.*", ".*uninitialized constant.*", ".*invalid argument.*"]
+    log_error_re = [".*(in .?logger_error).*"]
+    assert_fail_re = [".*(Assert -.*- failed).*"]
+    element_error_re = [".*(Execute - wait \w*::\w* to present).*", ".*(The element.*does not exist).*",
+                        ".*(Execute - open .*::.*- failed).*", ".*(Execute - select .*::.*- failed).*"]
+    env_issue_re = [".*(Driver info):.*", ".*(no implicit conversion).*", ".*(Internal Server Error).*"]
+    net_issue_re = [".*(Net::ReadTimeout).*", ".*(Request Timeout).*"]
+    code_error_re = [".*(undefined method).*", ".*(undefined local variable).*", ".*(uninitialized constant).*", ".*(invalid argument).*"]
 
     @classmethod
     def prejudge_case(cls, case):
@@ -38,20 +38,22 @@ class SimplePrejudgeHelper:
                 case = cases.iloc[index]
                 script_result_id = str(case.automation_script_result_id)
                 case_prejudge_result = cls.prejudge_case(case)
+                keyword = cls.extract_error_keyword(case_prejudge_result, case.error_message) if case.result == "failed" else cls.extract_error_keyword(case_prejudge_result)
                 if script_result_id not in script_result.keys():
-                    script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.id): {"result": case_prejudge_result}}}
+                    script_result[script_result_id] = {"result": case_prejudge_result, "keyword": keyword, "cases": {str(case.id): {"result": case_prejudge_result, "keyword": keyword}}}
                 else:
-                    script_result[script_result_id]["cases"][str(case.id)] = {"result": case_prejudge_result}
+                    script_result[script_result_id]["cases"][str(case.id)] = {"result": case_prejudge_result, "keyword": keyword}
                     if cls.error_priority[case_prejudge_result] < cls.error_priority[script_result[script_result_id]["result"]]:
                         script_result[script_result_id]["result"] = case_prejudge_result
         else:
             case = cases.iloc[0]
             script_result_id = str(case.automation_script_result_id)
             case_prejudge_result = cls.prejudge_case(case)
+            keyword = cls.extract_error_keyword(case_prejudge_result, case.error_message) if case.result == "failed" else cls.extract_error_keyword(case_prejudge_result)
             if script_not_case_flag:
-                script_result[script_result_id] = {"result": case_prejudge_result, "cases": {str(case.id): {"result": case_prejudge_result}}}
+                script_result[script_result_id] = {"result": case_prejudge_result, "keyword": keyword, "cases": {str(case.id): {"result": case_prejudge_result, "keyword": keyword}}}
             else:
-                script_result[script_result_id] = {"result": None, "cases": {str(case.id): {"result": case_prejudge_result}}}
+                script_result[script_result_id] = {"result": None, "cases": {str(case.id): {"result": case_prejudge_result, "keyword": keyword}}}
         return script_result
 
     @classmethod
@@ -99,3 +101,16 @@ class SimplePrejudgeHelper:
         else:
             prejudge_type = "other" if not error_message or len(error_message) == 0 else error_message
         return prejudge_type
+
+    @classmethod
+    def extract_error_keyword(cls, error_type, error_message=None):
+        error_re = {
+            "element not found": cls.element_error_re,
+            "execution environment issue": cls.env_issue_re,
+            "code error": cls.code_error_re,
+            "network issue": cls.net_issue_re
+        }
+        if error_type in error_re.keys():
+            return ",".join([str(i) for i in re.search("|".join(error_re[error_type]), error_message, re.IGNORECASE).groups() if i])
+        else:
+            return error_type
