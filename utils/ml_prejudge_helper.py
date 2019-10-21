@@ -248,6 +248,8 @@ class MLPrejudgeHelper:
                 # if cls.classify[predict_triage] < cls.classify[prejudge_result[automation_script_result_id]["result"]]:
                 if cls.error_priority[predict_triage] < cls.error_priority[prejudge_result[automation_script_result_id]["result"]]:
                     prejudge_result[automation_script_result_id]["result"] = predict_triage
+                    if prejudge_result[automation_script_result_id]["keyword"] in cls.error_priority.keys():
+                        prejudge_result[automation_script_result_id]["keyword"] = predict_triage
         return prejudge_result
 
     @staticmethod
