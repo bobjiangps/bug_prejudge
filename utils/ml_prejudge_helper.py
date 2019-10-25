@@ -240,7 +240,8 @@ class MLPrejudgeHelper:
                 if predict_match_bug:
                     prejudge_result[automation_script_result_id]["cases"][automation_case_result_id] = {"result": predict_triage, "keyword": predict_match_bug}
                     if prejudge_result[automation_script_result_id]["keyword"] not in cls.error_priority.keys():
-                        prejudge_result[automation_script_result_id]["keyword"] += ", %s" % predict_match_bug
+                        if predict_match_bug not in prejudge_result[automation_script_result_id]["keyword"].split(","):
+                            prejudge_result[automation_script_result_id]["keyword"] += ",%s" % predict_match_bug
                     else:
                         prejudge_result[automation_script_result_id]["keyword"] = predict_match_bug
                 else:
