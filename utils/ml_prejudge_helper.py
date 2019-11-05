@@ -235,6 +235,8 @@ class MLPrejudgeHelper:
                     prejudge_result[automation_script_result_id] = {"result": predict_triage, "keyword": predict_match_bug, "cases": {automation_case_result_id: {"result": predict_triage, "keyword": predict_match_bug}}}
                 else:
                     prejudge_result[automation_script_result_id] = {"result": predict_triage, "keyword": predict_triage, "cases": {automation_case_result_id: {"result": predict_triage, "keyword": SimplePrejudgeHelper.extract_error_keyword(predict_triage, init_test_round_errors.iloc[seq]["error_message"])}}}
+                    if predict_triage == "element not found":
+                        prejudge_result[automation_script_result_id]["keyword"] = list(prejudge_result[automation_script_result_id]["cases"].values())[0]["keyword"]
             else:
                 # prejudge_result[automation_script_result_id]["cases"][automation_case_result_id]["result"] = predict_triage
                 if predict_match_bug:
@@ -248,6 +250,8 @@ class MLPrejudgeHelper:
                     prejudge_result[automation_script_result_id]["cases"][automation_case_result_id] = {"result": predict_triage, "keyword": SimplePrejudgeHelper.extract_error_keyword(predict_triage, init_test_round_errors.iloc[seq]["error_message"])}
                 # if cls.classify[predict_triage] < cls.classify[prejudge_result[automation_script_result_id]["result"]]:
                 if cls.error_priority[predict_triage] < cls.error_priority[prejudge_result[automation_script_result_id]["result"]]:
+                    if prejudge_result[automation_script_result_id]["result"] == "element not found":
+                        prejudge_result[automation_script_result_id]["keyword"] = predict_triage
                     prejudge_result[automation_script_result_id]["result"] = predict_triage
                     if prejudge_result[automation_script_result_id]["keyword"] in cls.error_priority.keys():
                         prejudge_result[automation_script_result_id]["keyword"] = predict_triage
