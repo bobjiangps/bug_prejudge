@@ -46,6 +46,11 @@ class SimplePrejudgeHelper:
                     if cls.error_priority[case_prejudge_result] < cls.error_priority[script_result[script_result_id]["result"]]:
                         script_result[script_result_id]["result"] = case_prejudge_result
                         script_result[script_result_id]["keyword"] = case_prejudge_result
+                if script_result[script_result_id]["result"] == "element not found":
+                    for case in script_result[script_result_id]["cases"].values():
+                        if case["result"] == "element not found":
+                            script_result[script_result_id]["keyword"] = case["keyword"]
+                            break
         else:
             case = cases.iloc[0]
             script_result_id = str(case.automation_script_result_id)
@@ -53,6 +58,8 @@ class SimplePrejudgeHelper:
             keyword = cls.extract_error_keyword(case_prejudge_result, case.error_message) if case.result == "failed" else cls.extract_error_keyword(case_prejudge_result)
             if script_not_case_flag:
                 script_result[script_result_id] = {"result": case_prejudge_result, "keyword": case_prejudge_result, "cases": {str(case.id): {"result": case_prejudge_result, "keyword": keyword}}}
+                if script_result[script_result_id]["result"] == "element not found":
+                    script_result[script_result_id]["keyword"] = keyword
             else:
                 script_result[script_result_id] = {"result": None, "cases": {str(case.id): {"result": case_prejudge_result, "keyword": keyword}}}
         return script_result

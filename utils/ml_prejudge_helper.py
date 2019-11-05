@@ -251,6 +251,11 @@ class MLPrejudgeHelper:
                     prejudge_result[automation_script_result_id]["result"] = predict_triage
                     if prejudge_result[automation_script_result_id]["keyword"] in cls.error_priority.keys():
                         prejudge_result[automation_script_result_id]["keyword"] = predict_triage
+                if prejudge_result[automation_script_result_id]["result"] == "element not found":
+                    for case in prejudge_result[automation_script_result_id]["cases"].values():
+                        if case["result"] == "element not found":
+                            prejudge_result[automation_script_result_id]["keyword"] = case["keyword"]
+                            break
         return prejudge_result
 
     @staticmethod
