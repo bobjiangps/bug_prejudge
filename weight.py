@@ -16,7 +16,7 @@ if __name__ == "__main__":
         for p in triage_history["project"].unique():
             if p in include_projects:
                 project_history = triage_history[triage_history["project"] == p]
-                if len(project_history) >= Config.load_env("triage_trigger_ml"):
+                if len(project_history) >= Config.load_env("triage_trigger_ml") and (len(project_history[project_history["triage_type"] == "Product Error"]) / len(project_history)) > 0.05:
                     projects.append(p)
 
     for project in projects:
