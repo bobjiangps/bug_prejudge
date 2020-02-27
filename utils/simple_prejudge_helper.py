@@ -16,8 +16,11 @@ class SimplePrejudgeHelper:
 
     log_error_re = [".*(in .?logger_error).*"]
     assert_fail_re = [".*(Assert -.*- failed).*"]
+    expectation_fail_re = [".*(expected.*got.*\n).*\.+", ".*(expected.*to include.*\")\n"]
     element_error_re = [".*(Execute - wait \w*::\w* to present).*", ".*(The element.*does not exist).*",
-                        ".*(Execute - open .*::.*- failed).*", ".*(Execute - select .*::.*- failed).*"]
+                        ".*(Execute - open .*::.*- failed).*", ".*(Execute - select .*::.*- failed).*",
+                        ".*(waiting for .*to be located).*", ".*(waiting for .*to be present).*",
+                        "seconds.* (.* not present) in.*seconds", ".*\n.*(unable to locate element.*\n).*\.+"]
     env_issue_re = [".*(Driver info):.*", ".*(no implicit conversion).*", ".*(Internal Server Error).*"]
     net_issue_re = [".*(Net::ReadTimeout).*", ".*(Request Timeout).*"]
     code_error_re = [".*(undefined method).*", ".*(undefined local variable).*", ".*(uninitialized constant).*", ".*(invalid argument).*"]
@@ -100,12 +103,19 @@ class SimplePrejudgeHelper:
                     prejudge_type = "network issue"
                 else:
                     prejudge_type = "suspect bug"
-            elif re.search("|".join(cls.net_issue_re), error_message, re.IGNORECASE):
-                prejudge_type = "network issue"
-            elif re.search("|".join(cls.code_error_re), error_message, re.IGNORECASE):
-                prejudge_type = "code error"
             else:
-                prejudge_type = "other"
+                if re.search("|".join(cls.expectation_fail_re), error_message, re.IGNORECASE | re.DOTALL):
+                    prejudge_type = "suspect bug"
+                elif re.search("|".join(cls.element_error_re), error_message, re.IGNORECASE):
+                    prejudge_type = "element not found"
+                elif re.search("|".join(cls.env_issue_re), error_message, re.IGNORECASE):
+                    prejudge_type = "execution environment issue"
+                elif re.search("|".join(cls.net_issue_re), error_message, re.IGNORECASE):
+                    prejudge_type = "network issue"
+                elif re.search("|".join(cls.code_error_re), error_message, re.IGNORECASE):
+                    prejudge_type = "code error"
+                else:
+                    prejudge_type = "other"
         else:
             prejudge_type = "other" if not error_message or len(error_message) == 0 else error_message
         return prejudge_type

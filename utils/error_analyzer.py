@@ -6,7 +6,7 @@ class ErrorAnalyzer:
 
     @classmethod
     def check_network_issue_percentage(cls, errors):
-        network_error_keyword = ["Net::ReadTimeout", "Request Timeout"]
+        network_error_keyword = [".*(Net::ReadTimeout).*", ".*(Request Timeout).*"]
         network_errors = errors[errors["error_message"].str.contains("|".join(network_error_keyword), flags=re.IGNORECASE, regex=True)]
         network_error_percentage = network_errors.id.count() / errors.id.count()
         print("network error percentage is:", "%.2f%%" % (network_error_percentage * 100))
@@ -14,8 +14,10 @@ class ErrorAnalyzer:
 
     @classmethod
     def check_element_caused_most_failures(cls, errors):
-        element_error_keyword = [".*Execute - wait (\w*::\w*) to present.*", ".*Execute - open .* (\w*::\w*) .*- failed.*",
-                                 ".*Execute - select .* (\w*::\w*) .*- failed.*", ".*Execute - get .* (\w*::\w*) .*- failed.*"]
+        element_error_keyword = [".*(Execute - wait \w*::\w* to present).*", ".*(The element.*does not exist).*",
+                                 ".*(Execute - open .*::.*- failed).*", ".*(Execute - select .*::.*- failed).*",
+                                 ".*(waiting for .*to be located).*", ".*(waiting for .*to be present).*",
+                                 "seconds.* (.* not present) in.*seconds", ".*\n.*(unable to locate element.*\n).*\.+"]
         element_errors_match = errors[errors["error_message"].str.match("|".join(element_error_keyword), flags=re.IGNORECASE)]
         element_errors_extract = element_errors_match.error_message.str.extract("|".join(element_error_keyword), flags=re.IGNORECASE, expand=False)
         element_errors_record = []
