@@ -39,8 +39,9 @@ class MysqlHelper:
         try:
             self.get_cur()
             self.cur.execute(sql)
-            # return dict
             return self.__convert_one_result_to_dict(self.cur.fetchone())
+        except:
+            return False
         finally:
             self.close_connection()
 
@@ -49,8 +50,9 @@ class MysqlHelper:
             self.get_cur()
             self.cur.execute(sql)
             result = self.cur.fetchall()
-            # return dict
             return self.__convert_one_result_to_dict(result[random.randint(0, len(result)-1)])
+        except:
+            return False
         finally:
             self.close_connection()
 
@@ -58,8 +60,9 @@ class MysqlHelper:
         try:
             self.get_cur()
             self.cur.execute(sql)
-            # return list
             return self.__convert_all_results_to_list(self.cur.fetchall())
+        except:
+            return False
         finally:
             self.close_connection()
 
