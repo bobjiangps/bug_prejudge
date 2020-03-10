@@ -1,7 +1,11 @@
 import re
+from utils.mysql_helper import MysqlConnection
+from utils.triage_analyzer import TriageAnalyzer
 
 
 class SimplePrejudgeHelper:
+
+    regression_db = MysqlConnection().connect("local_regression")
 
     error_priority = {
         "suspect bug": 1,
@@ -65,6 +69,15 @@ class SimplePrejudgeHelper:
                     script_result[script_result_id]["keyword"] = keyword
             else:
                 script_result[script_result_id] = {"result": None, "cases": {str(case.id): {"result": case_prejudge_result, "keyword": keyword}}}
+
+        for script_result_id in script_result.keys():
+            ta = TriageAnalyzer(script_result_id, script_result[script_result_id], cls.regression_db)
+            inherit_triage_type = ta.inherit_triage_or_not()
+            if inherit_triage_type:
+                script_result[script_result_id]["result"] = inherit_triage_type
+                script_result[script_result_id]["keyword"] = "Match the rule to inherit previous triaged type"
+                for case_result_id in script_result[script_result_id]["cases"]:
+                    script_result[script_result_id]["cases"][case_result_id]["result"] = inherit_triage_type
         return script_result
 
     @classmethod
