@@ -83,6 +83,17 @@ class MLPrejudgeHelper:
                 if not script_not_case_flag:
                     script_result[list(script_result.keys())[0]]["result"] = None
                     del script_result[list(script_result.keys())[0]]["keyword"]
+
+        # check the triage history to decide inherit triage type or not, if not need, delete the following block
+        for script_result_id in script_result.keys():
+            ta = TriageAnalyzer(script_result_id, script_result[script_result_id], cls.regression_db)
+            inherit_triage_type = ta.inherit_triage_or_not()
+            if inherit_triage_type:
+                script_result[script_result_id]["result"] = inherit_triage_type
+                script_result[script_result_id]["keyword"] = "Match the rule to inherit previous triaged type"
+                for case_result_id in script_result[script_result_id]["cases"]:
+                    script_result[script_result_id]["cases"][case_result_id]["result"] = inherit_triage_type
+
         return script_result
 
     @classmethod
