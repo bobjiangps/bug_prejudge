@@ -1,6 +1,7 @@
 from utils.mysql_helper import MysqlConnection
 from utils.simple_prejudge_helper import SimplePrejudgeHelper
 from utils.gradient import sigmoid
+from configuration import classification
 from fuzzywuzzy import fuzz
 import pandas as pd
 import math
@@ -11,35 +12,9 @@ class MLPrejudgeHelper:
 
     regression_db = MysqlConnection().connect("local_regression")
 
-    error_priority = {
-        "existent bug": 0,
-        "suspect bug": 1,
-        "element not found": 2,
-        "execution environment issue": 3,
-        "code error": 4,
-        "network issue": 5,
-        "other": 6,
-        "not-run": 7,
-        "pass": 8
-    }
-
-    triage_priority = {
-        "Product Error": 1,
-        "Product Change": 2,
-        "Environment Error": 3,
-        "Framework Issue": 4,
-        "Script Issue": 5,
-        "Data Issue": 6,
-        "Dynamic Issue": 7,
-        "Other": 8,
-        "Not in Branch": 9,
-        "Not Ready": 10
-    }
-
-    classify = {
-        "Product Error": 1,
-        "Not Product Error": 2
-    }
+    error_priority = classification.error_priority
+    triage_priority = classification.triage_priority
+    classify = classification.classify
 
     @classmethod
     def prejudge_all(cls, init_triage_history, init_test_round_results, script_not_case_flag=False, algorithm="knn", logistic_bug_file=None):

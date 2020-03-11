@@ -1,22 +1,14 @@
 import re
 from utils.mysql_helper import MysqlConnection
 from utils.triage_analyzer import TriageAnalyzer
+from configuration import classification
 
 
 class SimplePrejudgeHelper:
 
     regression_db = MysqlConnection().connect("local_regression")
 
-    error_priority = {
-        "suspect bug": 1,
-        "element not found": 2,
-        "execution environment issue": 3,
-        "code error": 4,
-        "network issue": 5,
-        "other": 6,
-        "not-run": 7,
-        "pass": 8
-    }
+    error_priority = classification.error_priority
 
     log_error_re = [".*(in .?logger_error).*"]
     assert_fail_re = [".*(Assert -.*- failed).*"]
