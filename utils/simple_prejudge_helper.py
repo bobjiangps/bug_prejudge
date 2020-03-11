@@ -70,7 +70,9 @@ class SimplePrejudgeHelper:
                 script_result[script_result_id]["result"] = inherit_triage_type
                 script_result[script_result_id]["keyword"] = "Match the rule to inherit previous triaged type"
                 for case_result_id in script_result[script_result_id]["cases"]:
-                    script_result[script_result_id]["cases"][case_result_id]["result"] = inherit_triage_type
+                    if script_result[script_result_id]["cases"][case_result_id]["result"].lower() != "pass":
+                        script_result[script_result_id]["cases"][case_result_id]["result"] = inherit_triage_type
+                        script_result[script_result_id]["cases"][case_result_id]["keyword"] = "Match the rule to inherit previous triaged type"
 
         return script_result
 
