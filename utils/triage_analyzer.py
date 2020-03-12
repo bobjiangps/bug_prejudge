@@ -47,7 +47,8 @@ class TriageAnalyzer:
 
     def get_failed_case_info_of_script_result(self, script_result_id):
         failed_case_info_sql = """SELECT error_message, automation_case_id, prejudge_type FROM `automation_case_results`
-                                  where automation_script_result_id=%d""" % int(script_result_id)
+                                  where automation_script_result_id=%d
+                                  and error_message is not NULL and error_message != ''""" % int(script_result_id)
         result = self.db_conn.get_all_results_from_database(failed_case_info_sql)
         new_result = {}
         for case in result:
