@@ -24,7 +24,8 @@ class SimplePrejudgeHelper:
     @classmethod
     def prejudge_case(cls, case):
         if case.result == "failed":
-            prejudge_type = cls.prejudge_error_message(case.error_message)
+            # prejudge_type = cls.prejudge_error_message(case.error_message)
+            prejudge_type = cls.prejudge_error_message_v2(case)
         else:
             prejudge_type = case.result
         return prejudge_type
@@ -127,6 +128,23 @@ class SimplePrejudgeHelper:
                     prejudge_type = "other"
         else:
             prejudge_type = "other" if not error_message or len(error_message) == 0 else error_message
+        return prejudge_type
+
+    @classmethod
+    def prejudge_error_message_v2(cls, data):
+        prejudge_type = cls.prejudge_error_message(data.error_message)
+        if prejudge_type in ["code error", "other"]:
+            recent = cls.regression_db.get_all_results_from_database(
+                "SELECT result FROM `automation_case_results` where automation_case_id=%s order by id desc limit 10 " % str(
+                    data.automation_case_id))
+            successive_pass = 0
+            for seq in range(1, 10):
+                if recent[seq]["result"] == "pass":
+                    successive_pass += 1
+                else:
+                    break
+            if successive_pass > 8:
+                prejudge_type = "suspect bug"
         return prejudge_type
 
     @classmethod

@@ -162,7 +162,8 @@ class MLPrejudgeHelper:
     @classmethod
     def logistic_regression(cls, parameter, init_test_round_errors, bug_file=None):
         prejudge_result = {}
-        init_test_round_errors["error_type"] = init_test_round_errors["error_message"].apply(lambda x: SimplePrejudgeHelper.prejudge_error_message(x))
+        # init_test_round_errors["error_type"] = init_test_round_errors["error_message"].apply(lambda x: SimplePrejudgeHelper.prejudge_error_message(x))
+        init_test_round_errors["error_type"] = init_test_round_errors.apply(SimplePrejudgeHelper.prejudge_error_message_v2, axis=1)
         test_round_errors = init_test_round_errors.copy()
         test_round_errors["avg_duration"] = test_round_errors["automation_script_id"].apply(lambda x: cls.get_avg_duration_of_script(cls.regression_db, x))
         test_round_errors["avg_duration"] = pd.to_numeric(test_round_errors["avg_duration"])
