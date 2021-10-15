@@ -10,7 +10,7 @@ class SimplePrejudgeHelper:
 
     error_priority = classification.error_priority
 
-    log_error_re = [".*(in .?logger_error).*"]
+    log_error_re = [".*(in .?logger_error).*", ".*(AssertionError).*"]
     assert_fail_re = [".*(Assert -.*- failed).*"]
     expectation_fail_re = [".*(expected.*got.*\n).*\.+", ".*(expected.*to include.*\")\n"]
     element_error_re = [".*(Execute - wait \w*::\w* to present).*", ".*(The element.*does not exist).*",
