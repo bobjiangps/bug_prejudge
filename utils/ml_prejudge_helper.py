@@ -21,7 +21,9 @@ class MLPrejudgeHelper:
         script_result = {}
         if len(init_test_round_results) > 1:
             errors = init_test_round_results[init_test_round_results["result"] == "failed"].copy()
-            not_errors = init_test_round_results[init_test_round_results["result"] != "failed"]
+            warning = init_test_round_results[init_test_round_results["result"] == "warning"].copy()
+            errors = pd.merge(errors, warning, how="outer")
+            not_errors = init_test_round_results[init_test_round_results["result"] != "failed"][init_test_round_results["result"] != "warning"]
             for seq in range(len(not_errors)):
                 case = not_errors.iloc[seq]
                 script_result_id = str(case.automation_script_result_id)
@@ -32,12 +34,13 @@ class MLPrejudgeHelper:
                     script_result[script_result_id]["cases"][str(case.automation_case_result_id)] = {"result": case_prejudge_result, "keyword": case_prejudge_result}
                     if cls.error_priority[case_prejudge_result] < cls.error_priority[script_result[script_result_id]["result"]]:
                         script_result[script_result_id]["result"] = case_prejudge_result
-            if algorithm == "knn":
-                error_results = cls.neighbor_classifier(init_triage_history, errors)
-                cls.merge_result(script_result, error_results)
-            elif algorithm == "logistic":
-                error_results = cls.logistic_regression(init_triage_history, errors, bug_file=logistic_bug_file)
-                cls.merge_result(script_result, error_results)
+            if len(errors) > 0:
+                if algorithm == "knn":
+                    error_results = cls.neighbor_classifier(init_triage_history, errors)
+                    cls.merge_result(script_result, error_results)
+                elif algorithm == "logistic":
+                    error_results = cls.logistic_regression(init_triage_history, errors, bug_file=logistic_bug_file)
+                    cls.merge_result(script_result, error_results)
         else:
             case = init_test_round_results.iloc[[0]]
             script_result_id = str(case.automation_script_result_id[0])
