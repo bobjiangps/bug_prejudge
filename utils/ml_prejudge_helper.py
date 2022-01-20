@@ -1,5 +1,6 @@
 from utils.mysql_helper import MysqlConnection
 from utils.simple_prejudge_helper import SimplePrejudgeHelper
+from utils.triage_analyzer import TriageAnalyzer
 from utils.gradient import sigmoid
 from configuration import classification
 from fuzzywuzzy import fuzz
