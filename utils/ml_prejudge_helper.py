@@ -258,6 +258,7 @@ class MLPrejudgeHelper:
     @staticmethod
     def get_avg_duration_of_script(db_conn, script_id):
         error_limit = 10
+        avg_duration = None
         while error_limit:
             try:
                 avg_duration_sql = "select avg(UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(start_time)) as avg_duration from `automation_script_results` where automation_script_id=%s and DATE_SUB(CURDATE(), INTERVAL 12 MONTH) <= date(end_time)" % str(script_id)

@@ -25,15 +25,30 @@ class MysqlHelper:
         return self.cur
 
     def execute_sql(self, sql, commit=False):
+        result = True
         try:
             self.get_cur()
             self.cur.execute(sql)
             if commit:
                 self.conn.commit()
         except:
+            result = False
             self.conn.rollback()
         finally:
             self.close_connection()
+        if not result:
+            import time
+            time.sleep(1)
+            try:
+                self.get_cur()
+                self.cur.execute(sql)
+                if commit:
+                    self.conn.commit()
+            except:
+                self.conn.rollback()
+            finally:
+                self.close_connection()
+
 
     def get_first_result_from_database(self, sql):
         try:
