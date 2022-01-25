@@ -258,16 +258,22 @@ class MLPrejudgeHelper:
     @staticmethod
     def get_avg_duration_of_script(db_conn, script_id):
         error_limit = 10
-        avg_duration = None
+        duration = 0
         while error_limit:
             try:
-                avg_duration_sql = "select avg(UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(start_time)) as avg_duration from `automation_script_results` where automation_script_id=%s and DATE_SUB(CURDATE(), INTERVAL 12 MONTH) <= date(end_time)" % str(script_id)
-                avg_duration = db_conn.get_first_result_from_database(avg_duration_sql)["avg_duration"]
+                duration_sql = "select (UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(start_time)) as duration from \
+                               `automation_script_results` where automation_script_id=%s and DATE_SUB(CURDATE(), INTERVAL 12 MONTH) <= date(end_time) and result='pass'" % str(
+                    script_id)
+                con = db_conn.get_conn()
+                duration_data = pd.read_sql(duration_sql, con)
+                con.close()
+                if not isnan(duration_data.median()["duration"]):
+                    duration = float(duration_data.median())
                 break
             except:
-                print("error when get avg duration")
+                print("error when get median duration")
                 error_limit -= 1
-        return avg_duration
+        return duration
 
     @staticmethod
     def merge_result(old_result, new_result):
