@@ -138,7 +138,8 @@ class SimplePrejudgeHelper:
                 "SELECT result FROM `automation_case_results` where automation_case_id=%s order by id desc limit 10 " % str(
                     data.automation_case_id))
             successive_pass = 0
-            for seq in range(1, 10):
+            max_num = 10 if len(recent) >= 10 else len(recent)
+            for seq in range(1, max_num):
                 if recent[seq]["result"] == "pass":
                     successive_pass += 1
                 else:
