@@ -9,7 +9,8 @@ class PublicParameters(APIView):
         data = {
             "pad": {
                 "status": True,
-                "dis": 200
+                "dis": 0,
+                "max": 200
             }
         }
         return Response(data, status=status.HTTP_200_OK)
