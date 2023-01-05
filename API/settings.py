@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from utils.preload import PreLoad
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -131,3 +132,8 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MODELS = {}
+pre_load = PreLoad()
+if len(pre_load.models) == 0:
+    MODELS = pre_load.activate()
