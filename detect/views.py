@@ -36,18 +36,21 @@ class Detection(APIView):
     def post(self, request):
         start = time.time()
         src_category, model_category = request.data.keys()
-        img_path = Path.cwd().joinpath("static", "cache_images", f"{int(time.time())}.png")
-        with open(img_path, "wb") as f:
+        origin_path = Path.cwd().joinpath("static", "cache_images", "origin", f"{request.META.get('uuid')}.png")
+        detect_path = str(origin_path).replace("origin", "detect")
+        with open(origin_path, "wb") as f:
             f.write(base64.b64decode(request.data[src_category].split(",")[1]))
         model_map = {
             "Elements": "element",
             "Icons": "icon"
         }
-        results, labels, _ = predict(list(MODELS[model_map[request.data[model_category]]].values())[0], str(img_path))
+        results, labels, _ = predict(list(MODELS[model_map[request.data[model_category]]].values())[0], str(origin_path))
         end = time.time()
         data = {
             "summary": labels,
             "detail": results,
             "duration": end-start
         }
-        return Response(data, status=status.HTTP_200_OK)
+        print(data)
+        shutil.copy(origin_path, detect_path)
+        return Response({"url": "static" + detect_path.split("static")[-1]}, status=status.HTTP_200_OK)
