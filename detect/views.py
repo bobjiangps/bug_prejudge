@@ -37,7 +37,7 @@ class Detection(APIView):
         start = time.time()
         src_category, model_category = request.data.keys()
         origin_path = Path.cwd().joinpath("static", "cache_images", "origin", f"{request.META.get('uuid')}.png")
-        detect_path = str(origin_path).replace("origin", "detect")
+        detect_path = str(origin_path).replace("origin", "detected")
         with open(origin_path, "wb") as f:
             f.write(base64.b64decode(request.data[src_category].split(",")[1]))
         model_map = {
