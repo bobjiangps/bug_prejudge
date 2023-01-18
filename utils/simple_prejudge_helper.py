@@ -17,7 +17,7 @@ class SimplePrejudgeHelper:
                         ".*(Execute - open .*::.*- failed).*", ".*(Execute - select .*::.*- failed).*",
                         ".*(waiting for .*to be located).*", ".*(waiting for .*to be present).*",
                         "seconds.* (.* not present) in.*seconds", ".*\n.*(unable to locate element.*\n).*\.+",
-                        ".*(cannot see.*wait.*seconds).*"]
+                        ".*(cannot see.*wait.*seconds[^\"']).*", ".*(TimeoutException:[\s\S]*wait_element_[\s\S]*WebDriverWait).*"]
     env_issue_re = [".*(Driver info):.*", ".*(no implicit conversion).*", ".*(Internal Server Error).*"]
     net_issue_re = [".*(Net::ReadTimeout).*", ".*(Request Timeout).*"]
     code_error_re = [".*(undefined method).*", ".*(undefined local variable).*", ".*(uninitialized constant).*",
