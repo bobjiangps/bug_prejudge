@@ -1,13 +1,14 @@
 error_priority = {
     "existent bug": 0,
     "suspect bug": 1,
-    "element not found": 2,
-    "execution environment issue": 3,
-    "code error": 4,
-    "network issue": 5,
-    "other": 6,
-    "not-run": 7,
-    "pass": 8
+    "wcag issue": 2,
+    "element not found": 3,
+    "execution environment issue": 4,
+    "code error": 5,
+    "network issue": 6,
+    "other": 7,
+    "not-run": 8,
+    "pass": 9
 }
 
 triage_priority = {

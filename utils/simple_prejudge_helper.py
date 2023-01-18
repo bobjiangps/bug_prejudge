@@ -12,18 +12,22 @@ class SimplePrejudgeHelper:
 
     log_error_re = [".*(in .?logger_error).*", ".*(AssertionError).*"]
     assert_fail_re = [".*(Assert -.*- failed).*"]
-    expectation_fail_re = [".*(expected.*got.*\n).*\.+", ".*(expected.*to include.*\")\n"]
+    expectation_fail_re = [".*(expected.*got.*\n).*\.+", ".*(expected.*to include.*\")\n", ".*(expect to.*but.*\n).*"]
     element_error_re = [".*(Execute - wait \w*::\w* to present).*", ".*(The element.*does not exist).*",
                         ".*(Execute - open .*::.*- failed).*", ".*(Execute - select .*::.*- failed).*",
                         ".*(waiting for .*to be located).*", ".*(waiting for .*to be present).*",
-                        "seconds.* (.* not present) in.*seconds", ".*\n.*(unable to locate element.*\n).*\.+"]
+                        "seconds.* (.* not present) in.*seconds", ".*\n.*(unable to locate element.*\n).*\.+",
+                        ".*(cannot see.*wait.*seconds).*"]
     env_issue_re = [".*(Driver info):.*", ".*(no implicit conversion).*", ".*(Internal Server Error).*"]
     net_issue_re = [".*(Net::ReadTimeout).*", ".*(Request Timeout).*"]
-    code_error_re = [".*(undefined method).*", ".*(undefined local variable).*", ".*(uninitialized constant).*", ".*(invalid argument).*"]
+    code_error_re = [".*(undefined method).*", ".*(undefined local variable).*", ".*(uninitialized constant).*",
+                     ".*(invalid argument).*", ".*(wrong number of arguments).*"]
+    wcag_issue_re = [".*(wcag issue).*"]
+
 
     @classmethod
     def prejudge_case(cls, case):
-        if case.result == "failed":
+        if case.result == "failed" or case.result == "warning":
             # prejudge_type = cls.prejudge_error_message(case.error_message)
             prejudge_type = cls.prejudge_error_message_v2(case)
         else:
@@ -38,7 +42,7 @@ class SimplePrejudgeHelper:
                 case = cases.iloc[index]
                 script_result_id = str(case.automation_script_result_id)
                 case_prejudge_result = cls.prejudge_case(case)
-                keyword = cls.extract_error_keyword(case_prejudge_result, case.error_message) if case.result == "failed" else cls.extract_error_keyword(case_prejudge_result)
+                keyword = cls.extract_error_keyword(case_prejudge_result, case.error_message) if case.result in ["failed", "warning"] else cls.extract_error_keyword(case_prejudge_result)
                 if script_result_id not in script_result.keys():
                     script_result[script_result_id] = {"result": case_prejudge_result, "keyword": case_prejudge_result, "cases": {str(case.id): {"result": case_prejudge_result, "keyword": keyword}}}
                 else:
@@ -91,7 +95,7 @@ class SimplePrejudgeHelper:
     @classmethod
     def prejudge_script(cls, script):
         script_prejudge_type = ""
-        script_prejudge_priority = 9
+        script_prejudge_priority = 10
         for case in script:
             case_prejudge_type = cls.prejudge_case(case)
             if cls.error_priority[case_prejudge_type] < script_prejudge_priority:
@@ -102,6 +106,11 @@ class SimplePrejudgeHelper:
     @classmethod
     def prejudge_error_message(cls, error_message):
         if error_message and str(error_message) != "nan":
+            if len(error_message) > 3000:
+                if error_message.find("is expected") > 0:
+                    return "suspect bug"
+                else:
+                    return "other"
             if re.search("|".join(cls.log_error_re), error_message, re.IGNORECASE):
                 if re.search("|".join(cls.assert_fail_re), error_message, re.IGNORECASE):
                     prejudge_type = "suspect bug"
@@ -111,6 +120,10 @@ class SimplePrejudgeHelper:
                     prejudge_type = "execution environment issue"
                 elif re.search("|".join(cls.net_issue_re), error_message, re.IGNORECASE):
                     prejudge_type = "network issue"
+                elif re.search("|".join(cls.code_error_re), error_message, re.IGNORECASE):
+                    prejudge_type = "code error"
+                elif re.search("|".join(cls.wcag_issue_re), error_message, re.IGNORECASE):
+                    prejudge_type = "wcag issue"
                 else:
                     prejudge_type = "suspect bug"
             else:
@@ -124,6 +137,8 @@ class SimplePrejudgeHelper:
                     prejudge_type = "network issue"
                 elif re.search("|".join(cls.code_error_re), error_message, re.IGNORECASE):
                     prejudge_type = "code error"
+                elif re.search("|".join(cls.wcag_issue_re), error_message, re.IGNORECASE):
+                    prejudge_type = "wcag issue"
                 else:
                     prejudge_type = "other"
         else:
