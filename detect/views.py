@@ -17,7 +17,12 @@ class PublicParameters(APIView):
                 "dis": 0,
                 "max": 400
             },
-            "coefficient": 0.35
+            "coefficient": 0.28,
+            "slicing": {
+                "status": True,
+                "line": 480,
+                "margin": 20
+            }
         }
         return Response(data, status=status.HTTP_200_OK)
 
